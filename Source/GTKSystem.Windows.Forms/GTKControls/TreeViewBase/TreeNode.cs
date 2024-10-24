@@ -91,7 +91,7 @@ namespace System.Windows.Forms
                 if (treeView != null)
                 {
                     path = string.Format("{0}{1}{2}", Parent?.FullPath ?? "", treeView.PathSeparator, this.Text);
-                    if (path.StartsWith(PathSeparator))
+                    if (path.StartsWith(treeView.PathSeparator))
                         path = path.Substring(1);
                 }
                 return path;
