@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace GTKWinFormsApp
         {
             InitializeComponent();
             this.Shown += Form4_Shown;
+            button5.Click += (_, _) => 
+            {
+                Debug.Print(Control.ModifierKeys.ToString()); 
+            };
         }
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
