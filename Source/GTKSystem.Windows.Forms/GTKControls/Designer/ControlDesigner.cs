@@ -48,7 +48,7 @@ namespace System.Windows.Forms.Design
         private Exception _thrownException;
 
         private bool _ctrlSelect;                           // if the CTRL key was down at the mouse down
-        private bool _toolPassThrough;                      // a tool is selected, allow the parent to draw a rect for it.
+        private bool _toolPassThrough;                      // a tool is selected, allow the _parent to draw a rect for it.
         private bool _removalNotificationHooked;
         private bool _revokeDragDrop = true;
         private bool _hadDragDrop;

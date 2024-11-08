@@ -73,9 +73,14 @@ $RECYCLE.BIN/
 /Samples/GTKSystemWinFormsApp11/obj/GTKSystemWinFormsApp11.csproj.nuget.g.props
 /Samples/GTKSystemWinFormsApp11/obj/project.assets.json
 /Samples/GTKSystemWinFormsApp11/obj/project.nuget.cache
-/GtkWinForms.20241024.zip
-/Samples/GTKSystemWinFormsApp11/bin/Debug/net8.0/theme
-/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources
 /Source/GTKSystem.Windows.Forms/obj/GTKSystem.Windows.Forms.csproj.nuget.dgspec.json
 /Source/GTKSystem.Windows.Forms/obj/project.assets.json
 /Source/GTKSystem.Windows.Forms/obj/project.nuget.cache
+/Samples/GTKSystemWinFormsApp11/bin/Debug/net8.0/theme/setup.theme
+/Samples/GTKSystemWinFormsApp11/bin/Debug/net8.0/theme/style.css
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/010.jpg
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/BindingNavigator.Delete.ico
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/Form3$__gtksharp_1_GTKSystem_Windows_Forms_GTKControls_ControlBase_ButtonBase_img.png
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/img10.jpg
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/img11.jpg
+/Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/timg2.jpg

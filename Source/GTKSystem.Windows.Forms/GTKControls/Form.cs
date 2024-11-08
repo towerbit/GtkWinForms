@@ -22,7 +22,8 @@ namespace System.Windows.Forms
         public override object GtkControl { get => self; }
         private Gtk.Overlay _body = new Gtk.Overlay();
         private ObjectCollection _ObjectCollection;
-        public override event EventHandler SizeChanged;
+        // 可复用基类的事件，注释掉此事件
+        //public override event EventHandler SizeChanged;
 
         public Form() : base()
         {
@@ -45,35 +46,106 @@ namespace System.Windows.Forms
             self.ScrollView.Child = _body;
             _ObjectCollection = new ObjectCollection(this, _body);
             self.ResizeChecked += Self_ResizeChecked;
-            self.Shown += Control_Shown;
+            //self.Shown += Control_Shown; // self.Shown 只要窗口显示就会触发
+            self.Shown += (_, _) => OnVisibleChanged(EventArgs.Empty);
+            self.Hidden += (_, _) => OnVisibleChanged(EventArgs.Empty);
             self.CloseWindowEvent += Self_CloseWindowEvent;
+
+            self.Realized += (sender, e) => base.InitStyle((Gtk.Widget)sender);
+            self.FocusInEvent += Self_FocusInEvent;
+            self.FocusOutEvent += Self_FocusOutEvent;
+            self.WindowStateEvent += Self_WindowStateEvent;
+            self.ButtonReleaseEvent += Self_ButtonReleaseEvent;
         }
 
         private void Self_ResizeChecked(object sender, EventArgs e)
         {
-            if (SizeChanged != null)
-                SizeChanged(this, EventArgs.Empty);
+            OnSizeChanged(EventArgs.Empty);
+            OnResize(EventArgs.Empty);
+        }
+
+
+        /// <summary>
+        /// 确保仅调用一次 OnShown 
+        /// </summary>
+        private bool _bShown = false;
+        private void Self_FocusInEvent(object sender, FocusInEventArgs e)
+        {
+            if (!_bShown)
+            {
+                _bShown = true;
+                _location = this.Location;
+                ShownControlBoxes();
+                OnShown(e);
+            }
+            OnActivated(e);
+        }
+
+        private void Self_FocusOutEvent(object sender, FocusOutEventArgs e)
+        {
+            OnDeactivate(e);
+        }
+
+        private void Self_WindowStateEvent(object sender, WindowStateEventArgs e)
+        {
+            var eventArgs = e.Args;
+            foreach (var arg in eventArgs)
+            {
+                var ews = arg as Gdk.EventWindowState;
+                if (ews != null)
+                {
+                    if (ews.NewWindowState.HasFlag(Gdk.WindowState.Maximized))
+                        _windowState = FormWindowState.Maximized;
+                    else if (ews.NewWindowState.HasFlag(Gdk.WindowState.Iconified))
+                        _windowState = FormWindowState.Minimized;
+                    else
+                        _windowState = FormWindowState.Normal;
+                    OnSizeChanged(EventArgs.Empty);
+                    OnResize(EventArgs.Empty);
+                }
+            }
+        }
+
+        private void Self_ButtonReleaseEvent(object sender, ButtonReleaseEventArgs e)
+        {
+            // 判断是否发生窗口位置改变
+            if (this.Location != _location)
+            {
+                _location = this.Location;
+                OnLocationChanged(EventArgs.Empty);
+                OnMove(EventArgs.Empty);
+            }
         }
 
         private bool Self_CloseWindowEvent(object sender, EventArgs e)
         {
             FormClosingEventArgs closing = new FormClosingEventArgs(CloseReason.UserClosing, false);
-            if (FormClosing != null)
-                FormClosing(this, closing);
-
+            //if (FormClosing != null)
+            //    FormClosing(this, closing);
+            OnFormClosing(closing);
             if (closing.Cancel == false)
             {
-                if (FormClosed != null)
-                    FormClosed(this, new FormClosedEventArgs(CloseReason.UserClosing));
+                CancelEventArgs canceling = new CancelEventArgs(false);
+                OnClosing(canceling);
+                //if (FormClosed != null)
+                //    FormClosed(this, new FormClosedEventArgs(CloseReason.UserClosing));
+                if (canceling.Cancel == false)
+                {
+                    OnFormClosed(new FormClosedEventArgs(CloseReason.UserClosing));
+                    OnClosed(new EventArgs());
+                    self.Destroy(); // 当主窗体关闭时，确保 Application.Exit() 被调用
+                    return true;
+                }
             }
-            return closing.Cancel == false;
+            //return closing.Cancel == false;
+            return false;
         }
-        private void Control_Shown(object sender, EventArgs e)
+        private void ShownControlBoxes()
         {
             if (self.Titlebar is Gtk.HeaderBar titlebar)
             {
                 titlebar.DecorationLayout = "menu:close";
-                if (formBorderStyle == FormBorderStyle.FixedToolWindow || formBorderStyle == FormBorderStyle.SizableToolWindow)
+                if (_formBorderStyle == FormBorderStyle.FixedToolWindow || _formBorderStyle == FormBorderStyle.SizableToolWindow)
                 {
                 }
                 else
@@ -96,14 +168,14 @@ namespace System.Windows.Forms
                     }
                 }
             }
-            if (Shown != null)
-                Shown(this, e);
+            //if (Shown != null)
+            //    Shown(this, e);
         }
 
-        private void Close_Clicked(object sender, EventArgs e)
-        {
-            self.CloseWindow();
-        }
+        //private void Close_Clicked(object sender, EventArgs e)
+        //{
+        //    self.CloseWindow();
+        //}
 
         private void Maximize_Clicked(object sender, EventArgs e)
         {
@@ -132,11 +204,11 @@ namespace System.Windows.Forms
             add { self.Scroll += value; }
             remove { self.Scroll += value; }
         }
-        private void OnLoad()
-        {
-            if (Load != null)
-                Load(this, new EventArgs());
-        }
+        //private void OnLoad()
+        //{
+        //    if (Load != null)
+        //        Load(this, new EventArgs());
+        //}
 
         public override void Show()
         {
@@ -179,7 +251,7 @@ namespace System.Windows.Forms
                     self.ScrollView.VscrollbarPolicy = PolicyType.Never;
                 }
 
-                this.FormBorderStyle = this.FormBorderStyle;
+                //this.FormBorderStyle = this.FormBorderStyle;
                 if (this.MaximizeBox == false && this.MinimizeBox == false)
                 {
                     self.TypeHint = Gdk.WindowTypeHint.Dialog;
@@ -229,7 +301,7 @@ namespace System.Windows.Forms
 
                 }
 
-                OnLoad();
+                OnLoad(EventArgs.Empty);
             }
             self.ShowAll();
         }
@@ -255,15 +327,16 @@ namespace System.Windows.Forms
                 throw new InvalidOperationException("ShowDialogOnDisabled");
             }
             Show(owner);
+            // TODO: Setup a flag to disable ESC to close 
             int irun = self.Run();
 
             return this.DialogResult;
         }
 
-        public event EventHandler Shown;
-        public event FormClosingEventHandler FormClosing;
-        public event FormClosedEventHandler FormClosed;
-        public override event EventHandler Load;
+        //public event EventHandler Shown;
+        //public event FormClosingEventHandler FormClosing;
+        //public event FormClosedEventHandler FormClosed;
+        //public override event EventHandler Load;
         public override string Text { get { return self.Title; } set { self.Title = value; } }
         public override Size ClientSize
         {
@@ -280,12 +353,12 @@ namespace System.Windows.Forms
         }
         public SizeF AutoScaleDimensions { get; set; }
         public AutoScaleMode AutoScaleMode { get; set; }
-        public FormBorderStyle formBorderStyle = FormBorderStyle.Sizable;
+        private FormBorderStyle _formBorderStyle = FormBorderStyle.Sizable;
         public FormBorderStyle FormBorderStyle
         {
-            get { return formBorderStyle; }
+            get { return _formBorderStyle; }
             set {
-                formBorderStyle = value;
+                _formBorderStyle = value;
                 self.Resizable = value == FormBorderStyle.Sizable || value == FormBorderStyle.SizableToolWindow;
                 if (value == FormBorderStyle.None)
                 {
@@ -309,14 +382,14 @@ namespace System.Windows.Forms
             }
         }
         public FormStartPosition StartPosition { get; set; }
-        private FormWindowState _WindowState = FormWindowState.Normal;
+        private FormWindowState _windowState = FormWindowState.Normal;
         public FormWindowState WindowState {
             get { 
-                return _WindowState;
+                return _windowState;
             } 
             set
             {
-                _WindowState = value;
+                _windowState = value;
                 if (self.IsMapped)
                 {
                     if (value == FormWindowState.Maximized)
@@ -327,6 +400,8 @@ namespace System.Windows.Forms
                     {
                         self.Iconify();
                     }
+                    else
+                        self.Unmaximize();
                 }
             } 
         }
@@ -334,16 +409,32 @@ namespace System.Windows.Forms
         public void Close() {
             if (self != null)
             {
-                self.CloseWindow();
+                //self.CloseWindow();
+                // self.CloseWindow() 不会触发 CloseWindowEvent
+                // 改用 Respond 发送关闭消息
+                self.Respond(ResponseType.DeleteEvent);
+                //// 需要自己处理关闭相应的事件
+                //var e1 = new FormClosingEventArgs(CloseReason.UserClosing, false);
+                //OnFormClosing(e1);
+                //if (e1.Cancel == false)
+                //{
+                //    var e2 = new CancelEventArgs(false);
+                //    OnClosing(e2);
+                //    if (e2.Cancel == false)
+                //    {
+                //        self.CloseWindow();
+
+                //        var e3 = new FormClosedEventArgs(CloseReason.UserClosing);
+                //        OnFormClosed(e3);
+                //        OnClosed(EventArgs.Empty);
+
+                //        // 对主窗体确保关闭时触发 Application.Exit(null)
+                //        Widget.Destroy();
+                //    }
+                //}
             }
         }
-        public override void Hide()
-        {
-            if (self != null)
-            {
-                self.Hide();
-            }
-        }
+        public override void Hide() => self?.Hide();
 
         public new ObjectCollection Controls { get { return _ObjectCollection; } }
 
@@ -366,10 +457,7 @@ namespace System.Windows.Forms
         {
             _Created = true;
         }
-        public bool Activate()
-        {
-            return self.Activate();
-        }
+        public bool Activate() => self?.Activate() ?? false;
         public MenuStrip MainMenuStrip { get; set; }
 
         public override IntPtr Handle => self.Handle;
@@ -388,20 +476,75 @@ namespace System.Windows.Forms
         {
         }
 
-        private bool _topMost = false;
-        public bool TopMost
+        #region 可重写的保护方法与对应的事件
+        public event FormClosingEventHandler FormClosing;
+        protected virtual void OnFormClosing(FormClosingEventArgs e) => FormClosing?.Invoke(this, e);
+        public event FormClosedEventHandler FormClosed;
+        protected virtual void OnFormClosed(FormClosedEventArgs e) => FormClosed?.Invoke(this, e);
+        public event CancelEventHandler Closing;
+        protected virtual void OnClosing(CancelEventArgs e) => Closing?.Invoke(this, e);
+        public event EventHandler Closed;
+        protected virtual void OnClosed(EventArgs e) => Closed?.Invoke(this, e);
+        public event EventHandler Load;
+        protected virtual void OnLoad(EventArgs e) => Load?.Invoke(this, e);
+        public event EventHandler Activated;
+        protected virtual void OnActivated(EventArgs e) => Activated?.Invoke(this, e);
+        public event EventHandler Deactivate;
+        protected virtual void OnDeactivate(EventArgs e) => Deactivate?.Invoke(this, e);
+        /// <summary>
+        /// 窗体首次显示时触发
+        /// </summary>
+        public event EventHandler Shown;
+        protected virtual void OnShown(EventArgs e)=> Shown?.Invoke(this, e);
+        #endregion
+
+        #region 隐藏 Form 类不需要的父类方法, 并且不再触发事件
+        protected sealed override void OnGotFocus(EventArgs e) { }
+        protected sealed override void OnLostFocus(EventArgs e) { }
+
+        public new event EventHandler GotFocus;
+        public new event EventHandler LostFocus;
+        #endregion
+
+        #region 重写属性
+        private Point _location;
+        public override Point Location
         {
-            get => _topMost;
+            get
+            {
+                Point ret = Point.Empty;
+                if (!_bShown)
+                    return _location;
+                if (self.IsMapped)
+                {
+                    // Control.Location 始终是 (0,0),
+                    // 这里用 Gtk.Window.GetPosition 返回窗口位置
+                    self.GetPosition(out int x, out int y);
+                    ret = new Point(x, y);
+                }
+                return ret;
+            }
             set
             {
-                if (_topMost != value)
-                {
-                    var gtkWindow = Widget.Toplevel as Gtk.Window;
-                    _topMost = value;
-                    gtkWindow.KeepAbove = _topMost;
-                }
+                if (!_bShown)
+                    _location = value;
+                else if (self.IsMapped)
+                    self.Move(value.X, value.Y);
             }
         }
+        public override int Left 
+        {
+            get => this.Location.X;
+            set => this.Location = new Point(value, this.Location.Y);
+        }
+
+        public override int Top 
+        {
+            get => this.Location.Y;
+            set => this.Location = new Point(this.Location.X, value);
+        }
+
+        #endregion
     }
 
     public class BindingContext : ContextBoundObject

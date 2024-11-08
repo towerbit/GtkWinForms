@@ -58,7 +58,7 @@ namespace System.Windows.Forms
         public int Height { get; set; }
 
         /// <summary>
-        ///  The controls parent.
+        ///  The controls _parent.
         /// </summary>
         public IntPtr Parent { get; set; }
 

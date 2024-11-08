@@ -8,6 +8,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -132,21 +133,21 @@ namespace System.Windows.Forms
 
         internal Image GetOriginalImage(string name)
         {
-            string direc = System.IO.Directory.GetCurrentDirectory();
-            string path1 = $"{direc}/Resources";
+            string direc = Directory.GetCurrentDirectory();
+            string path1 = Path.Combine(direc, "Resources");
             var value = this.ImageStream;
             if (value.ResourceInfo != null)
             {
                 //这里加载图像数据
-                string path2 = $"{path1}/{value.ResourceInfo.ResourceName}/{name}";
-                if (IO.File.Exists(path2))
+                string path2 = Path.Combine(path1, value.ResourceInfo.ResourceName, name);
+                if (File.Exists(path2))
                 {
                     return Bitmap.FromFile(path2);
                 }
             }
-            if (IO.File.Exists($"{path1}/{name}"))
+            if (File.Exists(Path.Combine(path1, name)))
             {
-                return Bitmap.FromFile($"{path1}/{name}");
+                return Bitmap.FromFile(Path.Combine(path1, name));
             }
             return null;
         }

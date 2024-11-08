@@ -35,7 +35,7 @@ namespace System.Windows.Forms
         Resizable = 8,
         //
         // 摘要:
-        //     Indicates that an element does not inherit the resizable state of its parent.
+        //     Indicates that an element does not inherit the resizable state of its _parent.
         ResizableSet = 16,
         //
         // 摘要:

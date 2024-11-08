@@ -15,7 +15,7 @@ namespace System.Windows.Forms
     {
         /// <summary>
         ///  Inherit (Default). This value indicates inherit the ImeMode from the
-        ///  parent control. For controls with no parent, the ImeMode will default
+        ///  _parent control. For controls with no _parent, the ImeMode will default
         ///  to NoControl.
         /// </summary>
         Inherit = -1,

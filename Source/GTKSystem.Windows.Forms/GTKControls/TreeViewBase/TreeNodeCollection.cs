@@ -36,7 +36,7 @@ namespace System.Windows.Forms
                 throw new ArgumentNullException("node");
             }
             node.Parent = owner;
-            node.treeView = owner.TreeView;
+            node.TreeView = owner.TreeView;
             base.Add(node);
             if (owner != null && owner.TreeView != null)
             {

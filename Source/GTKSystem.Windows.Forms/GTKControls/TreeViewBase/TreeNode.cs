@@ -17,9 +17,14 @@ namespace System.Windows.Forms
         private string index = "";
         internal string Index { get { return index; } set { index = value; } }
         internal Gtk.TreeIter TreeIter = Gtk.TreeIter.Zero;
-        private TreeNode parent;
-        internal TreeView treeView;
-        internal TreeView TreeView { get { return treeView; } }
+        private TreeNode _parent;
+        private TreeView _treeView;
+        public TreeView TreeView 
+        {
+            get => _treeView;
+            set => _treeView = value;
+        }
+
         private TreeNodeCollection nodes;
         public TreeNode()
         {
@@ -36,12 +41,12 @@ namespace System.Windows.Forms
         }
         public TreeNode(TreeView view) : this()
         {
-            this.treeView = view;
+            _treeView = view;
         }
         public TreeNode(TreeNode node) : this()
         {
-            this.parent = node;
-            this.treeView = node.TreeView;
+            this._parent = node;
+            _treeView = node.TreeView;
         }
         public TreeNodeCollection Nodes
         {
@@ -55,15 +60,13 @@ namespace System.Windows.Forms
         {
             get
             {
-                TreeView treeView = TreeView;
-                if (treeView != null && parent == treeView.root)
+                if (this.TreeView != null && _parent == this.TreeView.root)
                 {
                     return null;
                 }
-
-                return parent;
+                return _parent;
             }
-            internal set { parent = value; }
+            internal set { _parent = value; }
         }
         public string Text
         {
@@ -83,7 +86,7 @@ namespace System.Windows.Forms
         private bool _IsChecked;
         public bool Checked
         {
-            get => _IsChecked; set { _IsChecked = value; if (this.treeView != null) { this.treeView.SetChecked(this, value); } }
+            get => _IsChecked; set { _IsChecked = value; if (this.TreeView != null) { this.TreeView.SetChecked(this, value); } }
         }
 
         public string FullPath
@@ -91,10 +94,10 @@ namespace System.Windows.Forms
             get
             {
                 string path = string.Empty;
-                if (treeView != null)
+                if (this.TreeView != null)
                 {
-                    path = string.Format("{0}{1}{2}", Parent?.FullPath ?? "", treeView.PathSeparator, this.Text);
-                    if (path.StartsWith(treeView.PathSeparator))
+                    path = string.Format("{0}{1}{2}", Parent?.FullPath ?? "", this.TreeView.PathSeparator, this.Text);
+                    if (path.StartsWith(this.TreeView.PathSeparator))
                         path = path.Substring(1);
                 }
                 return path;
@@ -103,15 +106,15 @@ namespace System.Windows.Forms
         private bool _IsSelected = false;
         public bool IsSelected
         {
-            get=> _IsSelected; set { _IsSelected = value; if (this.treeView != null) { this.treeView.SetSelected(this, value); } }
+            get=> _IsSelected; set { _IsSelected = value; if (_treeView != null) { _treeView.SetSelected(this, value); } }
         }
         public bool IsExpanded
         {
             get
             {
-                if (this.treeView != null)
+                if (_treeView != null)
                 {
-                    return this.treeView.GetNodeExpanded(this);
+                    return _treeView.GetNodeExpanded(this);
                 }
                 else
                     return false;
@@ -137,19 +140,28 @@ namespace System.Windows.Forms
         public int StateImageIndex { get; set; }
         public string StateImageKey { get; set; }
         public void Expand(){
-            if (this.treeView != null) { this.treeView.SetExpandNode(this, false); }
+            if (this.TreeView != null) 
+            {
+                this.TreeView.SetExpandNode(this, false); 
+            }
         }
         public void ExpandAll()
         {
-            if (this.treeView != null) { this.treeView.SetExpandNode(this, true); }
+            if (this.TreeView != null) 
+            {
+                this.TreeView.SetExpandNode(this, true); 
+            }
         }
         public void Collapse()
         {
-            if (this.treeView != null) { this.treeView.SetCollapseNode(this); }
+            if (this.TreeView != null) 
+            {
+                this.TreeView.SetCollapseNode(this); 
+            }
         }
         public object Clone()
         {
-            TreeNode newnode = new TreeNode(treeView);
+            TreeNode newnode = new TreeNode(this.TreeView);
             Reflection.PropertyInfo[] props = newnode.GetType().GetProperties(Reflection.BindingFlags.Public | Reflection.BindingFlags.Instance);
             foreach(var pro in props)
             {

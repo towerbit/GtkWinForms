@@ -64,7 +64,7 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
-        ///  A suggested font, usually the parent control's Font property.
+        ///  A suggested font, usually the _parent control's Font property.
         /// </summary>
         public Font? Font { get; }
 

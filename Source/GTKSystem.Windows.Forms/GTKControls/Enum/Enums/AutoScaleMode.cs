@@ -25,8 +25,8 @@ namespace System.Windows.Forms
         Dpi,
 
         /// <summary>
-        ///  Controls scale according to their parent's scaling mode.
-        ///  If there is no parent, this behaves as if AutoScaleMode.None were set.
+        ///  Controls scale according to their _parent's scaling mode.
+        ///  If there is no _parent, this behaves as if AutoScaleMode.None were set.
         /// </summary>
         Inherit
     }

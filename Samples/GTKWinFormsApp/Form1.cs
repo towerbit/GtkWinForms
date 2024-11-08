@@ -294,7 +294,7 @@ namespace GTKWinFormsApp
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            Console.WriteLine("treeView1_AfterSelect：" + treeView1.SelectedValuePath);
+            Console.WriteLine("treeView1_AfterSelect：" + treeView1.SelectedNode.FullPath);
             Console.WriteLine("treeView1_AfterSelect：" + e.Node?.Text);
         }
 

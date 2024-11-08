@@ -201,7 +201,7 @@ namespace System.Windows.Forms
         //      * If idChild isn't zero, call get_accChild() in the container to see
         //          if the child is an object in its own right. If so, you will get
         //          back an IDispatch* object for the child. You should release the
-        //          parent, and call QueryInterface() on the child object to get its
+        //          _parent, and call QueryInterface() on the child object to get its
         //          IAccessible*. Then you talk directly to the child. Otherwise,
         //          if get_accChild() returns you nothing, you should continue to
         //          use the child VARIANT. You will ask the container for the properties
@@ -232,7 +232,7 @@ namespace System.Windows.Forms
         ///  Sent when a hidden object is shown. 
         ///  The system sends this event for the following user interface elements:
         ///  caret, cursor, and window object. Server applications send this event for their accessible objects.
-        ///  Clients assume that when this event is sent by a parent object, all child objects are already displayed. 
+        ///  Clients assume that when this event is sent by a _parent object, all child objects are already displayed. 
         ///  Therefore, server applications do not send this event for the child objects.
         /// </summary>
         Show = 0x8002,                  // hwnd + ID + idChild is shown item
@@ -242,7 +242,7 @@ namespace System.Windows.Forms
         ///  Sent when an object is hidden. 
         ///  The system sends this event for the following user interface elements: caret and cursor. 
         ///  Server applications send this event for their accessible objects.
-        ///  When this event is generated for a parent object, all child objects are already hidden.
+        ///  When this event is generated for a _parent object, all child objects are already hidden.
         ///  Server applications do not send this event for the child objects.
         /// </summary>
         Hide = 0x8003,                  // hwnd + ID + idChild is hidden item
@@ -254,11 +254,11 @@ namespace System.Windows.Forms
         ///  header control, list-view control, toolbar control, and window object.
         ///  Server applications send this event as appropriate for their accessible objects.
         /// </summary>
-        Reorder = 0x8004,               // hwnd + ID + idChild is parent of zordering children
+        Reorder = 0x8004,               // hwnd + ID + idChild is _parent of zordering children
 
         /// <summary>
         ///  Minimize the number of notifications!
-        ///  When you are hiding a parent object, obviously all child objects are no
+        ///  When you are hiding a _parent object, obviously all child objects are no
         ///  longer visible on screen. They still have the same "visible" status,
         ///  but are not truly visible. Hence do not send HIDE notifications for the
         ///  children also. One implies all. The same goes for SHOW.
@@ -268,10 +268,10 @@ namespace System.Windows.Forms
         Selection = 0x8006,             // hwnd + ID + idChild is selected item (if only one), or idChild is OBJID_WINDOW if complex
         SelectionAdd = 0x8007,          // hwnd + ID + idChild is item added
         SelectionRemove = 0x8008,       // hwnd + ID + idChild is item removed
-        SelectionWithin = 0x8009,       // hwnd + ID + idChild is parent of changed selected items
+        SelectionWithin = 0x8009,       // hwnd + ID + idChild is _parent of changed selected items
 
         /// <summary>
-        ///  There is only one "focused" child item in a parent. This is the place
+        ///  There is only one "focused" child item in a _parent. This is the place
         ///  keystrokes are going at a given moment. Hence only send a notification
         ///  about where the NEW focus is going. A NEW item getting the focus already
         ///  implies that the OLD item is losing it.
@@ -309,7 +309,7 @@ namespace System.Windows.Forms
         NameChange = 0x800C,            // hwnd + ID + idChild is item w/ name change
         DescriptionChange = 0x800D,     // hwnd + ID + idChild is item w/ desc change
         ValueChange = 0x800E,           // hwnd + ID + idChild is item w/ value change
-        ParentChange = 0x800F,          // hwnd + ID + idChild is item w/ new parent
+        ParentChange = 0x800F,          // hwnd + ID + idChild is item w/ new _parent
         HelpChange = 0x8010,            // hwnd + ID + idChild is item w/ help change
         DefaultActionChange = 0x8011,   // hwnd + ID + idChild is item w/ def action change
         AcceleratorChange = 0x8012,     // hwnd + ID + idChild is item w/ keybd accel change

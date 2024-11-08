@@ -30,7 +30,7 @@ namespace System.Windows.Forms
         EnableAllowFocusChange = 2,
 
         /// <summary>
-        ///  AutoValidate setting for this container is determined by its parent container.
+        ///  AutoValidate setting for this container is determined by its _parent container.
         /// </summary>
         Inherit = -1,
     }

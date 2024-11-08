@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +18,14 @@ namespace GTKWinFormsApp
         public Form4()
         {
             InitializeComponent();
+            // GotFocus 事件不会触发
+            this.GotFocus += (_, _) => throw new InvalidOperationException();
             this.Shown += Form4_Shown;
 
             button5.Text = "Font Dialog";
             button5.Click += button5_Click;
+            button2.Text = "Close";
+            button2.Click += (_, _) => this.Close();
         }
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
@@ -28,6 +33,110 @@ namespace GTKWinFormsApp
             panel1Location.X = panel1.Widget.MarginStart;
             panel1Location.Y = panel1.Widget.MarginTop;
         }
+
+        #region 保护方法调用
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            Debug.Print($"==> OnFormClosing");
+            if (MessageBox.Show("确定要关闭吗", "OnFormClosing",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+            Debug.Print($"==> OnFormClosed");
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            Debug.Print($"==> OnClosing");
+            if (MessageBox.Show("再次确定要关闭吗", "OnClosing",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Debug.Print($"==> OnClosed");
+        }
+
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            Debug.Print($"==> OnMove: {this.Location}");
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Debug.Print($"==> OnResize: {this.Size}");
+            Debug.Print($"this.WindowState ={this.WindowState}");
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            Debug.Print($"==> OnVisibleChanged: Visible={this.Visible}");
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            Debug.Print("==> OnShown");
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            Debug.Print("==> OnActivated");
+            Debug.Print($"ClientSize = {this.ClientSize}, Size = {this.Size}, Width = {this.Width}, Height = {this.Height}");
+            Debug.Print($"Location = {this.Location}, Left = {this.Left}, Top = {this.Top}");
+        }
+
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+            Debug.Print("==> OnDeactivate");
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            Debug.Print("==> OnSizeChanged");
+            Debug.Print($"Size = {this.Size}");
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Debug.Print("==> OnLoad");
+        }
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+            Debug.Print("==> OnLocationChanged");
+        }
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            Debug.Print("==> OnMouseUp");
+        }
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            Debug.Print("==> OnMouseDown");
+        }
+
+        #endregion
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -115,14 +224,14 @@ namespace GTKWinFormsApp
             if (isBringToFront)
             {
                 hScrollBar1.SendToBack();
-                isBringToFront =false;
+                isBringToFront = false;
             }
             else
             {
                 hScrollBar1.BringToFront();
                 isBringToFront = true;
             }
-            
+
         }
 
         private void vScrollBar1_ValueChanged(object sender, EventArgs e)
@@ -137,5 +246,16 @@ namespace GTKWinFormsApp
 
             panel1.Widget.MarginStart = panel1Location.X + hScrollBar1.Value;
         }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            hScrollBar1.BringToFront();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            treeView1.SelectedNode.Expand();
+        }
+       
     }
 }

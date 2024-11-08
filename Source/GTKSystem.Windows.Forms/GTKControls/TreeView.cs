@@ -77,16 +77,15 @@ namespace System.Windows.Forms
         private TreeViewCancelEventArgs cancelEventArgs = null;
         private void Selection_Changed(object sender, EventArgs e)
         {
-            if (BeforeSelect != null)
+            if (self.TreeView.Selection.GetSelected(out TreeIter iter))
             {
-                if (self.TreeView.Selection.GetSelected(out TreeIter iter))
-                {
-                    TreePath[] paths = self.TreeView.Selection.GetSelectedRows();
-                    TreeNode result = new TreeNode();
-                    GetNodeChild(root, paths[0].Indices, ref result);
-                    cancelEventArgs = new TreeViewCancelEventArgs(result, false, TreeViewAction.ByMouse);
-                    BeforeSelect(this, cancelEventArgs);
-                }
+                TreePath[] paths = self.TreeView.Selection.GetSelectedRows();
+                TreeNode result = new TreeNode();
+                GetNodeChild(root, paths[0].Indices, ref result);
+                // Nodes.AddRange 加入的子节点可能未设置 TreeView，这里补上
+                if (null == result.TreeView) result.TreeView = this;
+                cancelEventArgs = new TreeViewCancelEventArgs(result, false, TreeViewAction.ByMouse);
+                BeforeSelect?.Invoke(this, cancelEventArgs);
             }
         }
 

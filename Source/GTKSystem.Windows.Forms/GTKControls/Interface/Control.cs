@@ -59,20 +59,18 @@ namespace System.Windows.Forms
 
         private void Widget_ConfigureEvent(object o, ConfigureEventArgs args)
         {
-            if (Move != null)
-                Move(this, args);
+            //if (Move != null)
+            //    Move(this, args);
+            OnMove(args);
         }
         #region events
         private bool WidgetRealized = false;
         private void Widget_Realized(object sender, EventArgs e)
         {
-            if (WidgetRealized == false)
-            {
-                WidgetRealized = true;
-                InitStyle((Gtk.Widget)sender);
-                if (Load != null)
-                    Load(this, e);
-            }
+            InitStyle((Gtk.Widget)sender);
+            // Control 没有 Load 事件
+            //if (Load != null)
+            //    Load(this, e);
         }
 
         private void Widget_ButtonPressEvent(object o, ButtonPressEventArgs args)
@@ -86,40 +84,45 @@ namespace System.Windows.Forms
             else if (args.Event.Button == 3)
                 result = MouseButtons.Right;
 
-            if (MouseDown != null)
-            {
-                MouseDown(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
-            }
+            //if (MouseDown != null)
+            //{
+            //    MouseDown(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            //}
+            OnMouseDown(new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
             if (args.Event.Type == Gdk.EventType.TwoButtonPress || args.Event.Type == Gdk.EventType.DoubleButtonPress)
             {
-                if (MouseDoubleClick != null)
-                    MouseDoubleClick(this, new MouseEventArgs(result, 2, (int)args.Event.X, (int)args.Event.Y, 0));
-                if (DoubleClick != null)
-                    DoubleClick(this, EventArgs.Empty);
+                //if (MouseDoubleClick != null)
+                //    MouseDoubleClick(this, new MouseEventArgs(result, 2, (int)args.Event.X, (int)args.Event.Y, 0));
+                OnMouseDoubleClick(new MouseEventArgs(result, 2, (int)args.Event.X, (int)args.Event.Y, 0));
+                //if (DoubleClick != null)
+                //    DoubleClick(this, EventArgs.Empty);
+                OnDoubleClick(EventArgs.Empty);
             }
             else
             {
-                if (Click != null)
-                    Click(this, EventArgs.Empty);
-                if (MouseClick != null)
-                    MouseClick(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+                //if (Click != null)
+                //    Click(this, EventArgs.Empty);
+                //if (MouseClick != null)
+                //    MouseClick(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+                OnMouseClick(new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+                OnClick(EventArgs.Empty);
             }
             
         }
         private void Widget_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
         {
-            if (MouseUp != null)
-            {
-                MouseButtons result = MouseButtons.None;
-                if (args.Event.Button == 1)
-                    result = MouseButtons.Left;
-                else if (args.Event.Button == 2)
-                    result = MouseButtons.Middle;
-                else if (args.Event.Button == 3)
-                    result = MouseButtons.Right;
-
-                MouseUp(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
-            }
+            //if (MouseUp != null)
+            //{
+            MouseButtons result = MouseButtons.None;
+            if (args.Event.Button == 1)
+                result = MouseButtons.Left;
+            else if (args.Event.Button == 2)
+                result = MouseButtons.Middle;
+            else if (args.Event.Button == 3)
+                result = MouseButtons.Right;
+            //MouseUp(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            OnMouseUp(new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            //}
 
             if (ContextMenuStrip != null)
             {
@@ -144,18 +147,21 @@ namespace System.Windows.Forms
                     this.Widget.Window.Cursor = new Gdk.Cursor(((Gtk.Widget)o).Display, Cursor.CursorType);
                 }
             }
-            if (Enter != null)
-                Enter(this, args);
-            if (MouseEnter != null)
-                MouseEnter(this, args);
-
-            if (MouseHover != null)
-                MouseHover(this, args);
+            //if (Enter != null)
+            //    Enter(this, args);
+            //if (MouseEnter != null)
+            //    MouseEnter(this, args);
+            //if (MouseHover != null)
+            //    MouseHover(this, args);
+            OnMouseEnter(EventArgs.Empty);
+            OnEnter(EventArgs.Empty);
+            OnMouseHover(EventArgs.Empty);
         }
         private void Widget_MotionNotifyEvent(object o, MotionNotifyEventArgs args)
         {
-            if (MouseMove != null)
-                MouseMove(this, new MouseEventArgs(MouseButtons.None, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            //if (MouseMove != null)
+            //    MouseMove(this, new MouseEventArgs(MouseButtons.None, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            OnMouseMove(new MouseEventArgs(MouseButtons.None, 1, (int)args.Event.X, (int)args.Event.Y, 0));
         }
         private void Widget_LeaveNotifyEvent(object o, LeaveNotifyEventArgs args)
         {
@@ -163,56 +169,64 @@ namespace System.Windows.Forms
             {
                 this.Widget.Window.Cursor = null;
             }
-            if (Leave != null)
-                Leave(this, args);
-            if (MouseLeave != null)
-                MouseLeave(this, args);
-
-
+            //if (Leave != null)
+            //    Leave(this, args);
+            //if (MouseLeave != null)
+            //    MouseLeave(this, args);
+            OnMouseLeave(EventArgs.Empty);
+            OnLeave(EventArgs.Empty);
         }
         private void Widget_ScrollEvent(object o, Gtk.ScrollEventArgs args)
         {
-            if (MouseWheel != null)
-                MouseWheel(this, new MouseEventArgs(MouseButtons.None, 0, (int)args.Event.X, (int)args.Event.Y, (int)args.Event.DeltaY));
+            //if (MouseWheel != null)
+            //    MouseWheel(this, new MouseEventArgs(MouseButtons.None, 0, (int)args.Event.X, (int)args.Event.Y, (int)args.Event.DeltaY));
+            OnMouseWheel(new MouseEventArgs(MouseButtons.None, 0, (int)args.Event.X, (int)args.Event.Y, (int)args.Event.DeltaY));
         }
         private void Widget_FocusInEvent(object o, FocusInEventArgs args)
         {
-            if (GotFocus != null)
-                GotFocus(this, args);
+            //if (GotFocus != null)
+            //    GotFocus(this, args);
+            OnGotFocus(EventArgs.Empty);
         }
         private void Widget_FocusOutEvent(object o, FocusOutEventArgs args)
         {
-            if (LostFocus != null)
-                LostFocus(this, args);
-
-            if (Validating != null)
-                Validating(this, cancelEventArgs);
-            if (Validated != null && cancelEventArgs.Cancel == false)
-                Validated(this, cancelEventArgs);
+            //if (LostFocus != null)
+            //    LostFocus(this, args);
+            //if (Validating != null)
+            //    Validating(this, cancelEventArgs);
+            //if (Validated != null && cancelEventArgs.Cancel == false)
+            //    Validated(this, cancelEventArgs);
+            OnLostFocus(EventArgs.Empty);
+            var e = new CancelEventArgs(false);
+            OnValidating(e);
+            if(e.Cancel == false)
+                OnValidated(e);
         }
         private void Widget_KeyPressEvent(object o, Gtk.KeyPressEventArgs args)
         {
             if (args.Event is Gdk.EventKey eventkey)
             {
                 Keys keys = (Keys)eventkey.HardwareKeycode;
-                _lstModifierKeys.Add(keys);
-                if (KeyDown != null)
-                    KeyDown(this, new KeyEventArgs(keys));
+                //if (KeyDown != null)
+                //    KeyDown(this, new KeyEventArgs(keys));
+                OnKeyDown(new KeyEventArgs(keys));
             }
         }
         private void Widget_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
-            _lstModifierKeys.Clear();
-            if (KeyUp != null)
-            {
-                Keys keys = (Keys)args.Event.HardwareKeycode;
-                KeyUp(this, new KeyEventArgs(keys));
-            }
-            if (KeyPress != null)
-            {
-                Keys keys = (Keys)args.Event.HardwareKeycode;
-                KeyPress(this, new KeyPressEventArgs(Convert.ToChar(keys)));
-            }
+            //if (KeyUp != null)
+            //{
+            //    Keys keys = (Keys)args.Event.HardwareKeycode;
+            //    KeyUp(this, new KeyEventArgs(keys));
+            //}
+            //if (KeyPress != null)
+            //{
+            //    Keys keys = (Keys)args.Event.HardwareKeycode;
+            //    KeyPress(this, new KeyPressEventArgs(Convert.ToChar(keys)));
+            //}
+            Keys keys = (Keys)args.Event.HardwareKeycode;
+            OnKeyUp(new KeyEventArgs(keys));
+            OnKeyPress(new KeyPressEventArgs(Convert.ToChar(keys)));
         }
 
         #endregion
@@ -853,12 +867,12 @@ namespace System.Windows.Forms
         public virtual event EventHandler TabStopChanged;
         public virtual event EventHandler TextChanged;
 
-        CancelEventArgs cancelEventArgs = new CancelEventArgs(false);
+        //CancelEventArgs cancelEventArgs = new CancelEventArgs(false);
         public virtual event EventHandler Validated;
         public virtual event CancelEventHandler Validating;
         public virtual event EventHandler VisibleChanged;
         //public event EventHandler Disposed;
-        public virtual event EventHandler Load;
+        //public virtual event EventHandler Load; Control 没有 Load 事件，Form 才有
         public virtual IAsyncResult BeginInvoke(Delegate method, params object[] args)
         {
             System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.StartNew(state =>
@@ -1348,12 +1362,12 @@ namespace System.Windows.Forms
                 this.Widget.ShowAll();
             }
         }
-        protected virtual void OnPaint(System.Windows.Forms.PaintEventArgs e)
-        {
-        }
-        protected virtual void OnParentChanged(EventArgs e)
-        {
-        }
+        //protected virtual void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        //{
+        //}
+        //protected virtual void OnParentChanged(EventArgs e)
+        //{
+        //}
 
         public virtual void SuspendLayout()
         {
@@ -1400,13 +1414,6 @@ namespace System.Windows.Forms
         {
             try
             {
-                if (image != null)
-                    image.Dispose();
-                if(surface != null) 
-                    surface.Dispose();
-                if(context != null) 
-                    context.Dispose();
-
                 if (this.Widget != null)
                 {
                     this.Widget.Destroy();
@@ -1426,34 +1433,105 @@ namespace System.Windows.Forms
                 return createParams;
             }
         }
-        protected virtual void OnKeyDown(KeyEventArgs e)
-        {
+        //protected virtual void OnKeyDown(KeyEventArgs e)
+        //{
 
-        }
-        protected virtual void OnKeyUp(KeyEventArgs e)
-        {
+        //}
+        //protected virtual void OnKeyUp(KeyEventArgs e)
+        //{
 
-        }
-        protected virtual void OnVisibleChanged(EventArgs e)
-        {
+        //}
+        //protected virtual void OnVisibleChanged(EventArgs e)
+        //{
 
-        }
-        protected virtual void OnSizeChanged(EventArgs e)
-        {
+        //}
+        //protected virtual void OnSizeChanged(EventArgs e)
+        //{
 
-        }
+        //}
         protected virtual void Select(bool directed, bool forward)
         {
 
         }
-        protected virtual void OnGotFocus(EventArgs e)
-        {
+        //protected virtual void OnGotFocus(EventArgs e)
+        //{
 
-        }
+        //}
         protected virtual void WndProc(ref Message m)
         {
             //Console.WriteLine($"HWnd:{m.HWnd},WParam:{m.WParam},LParam:{m.LParam},Msg:{m.Msg}");
         }
+
+        #region 可重写的保护方法
+        protected virtual void OnGotFocus(EventArgs e) => GotFocus?.Invoke(this, e);
+        protected virtual void OnLostFocus(EventArgs e) => LostFocus?.Invoke(this, e);
+
+        protected virtual void OnDragDrop(DragEventArgs e) => DragDrop?.Invoke(this, e);
+        protected virtual void OnDragEnter(DragEventArgs e) => DragEnter?.Invoke(this, e);
+        protected virtual void OnDragOver(DragEventArgs e) => DragOver?.Invoke(this, e);
+        protected virtual void OnDragLeave(DragEventArgs e) => DragLeave?.Invoke(this, e);
+        protected virtual void OnQueryContinueDrag(QueryContinueDragEventArgs e) => QueryContinueDrag?.Invoke(this, e);
+
+        protected virtual void OnMouseClick(MouseEventArgs e) => MouseClick?.Invoke(this, e);
+        protected virtual void OnMouseCaptureChanged(EventArgs e) => MouseCaptureChanged?.Invoke(this, e);
+        protected virtual void OnMouseDoubleClick(MouseEventArgs e) => MouseDoubleClick?.Invoke(this, e);
+        protected virtual void OnMouseDown(MouseEventArgs e) => MouseDown?.Invoke(this, e);
+        protected virtual void OnMouseEnter(EventArgs e) => MouseEnter?.Invoke(this, e);
+        protected virtual void OnMouseHover(EventArgs e) => MouseHover?.Invoke(this, e);
+        protected virtual void OnMouseLeave(EventArgs e) => MouseLeave?.Invoke(this, e);
+        protected virtual void OnMouseMove(MouseEventArgs e) => MouseMove?.Invoke(this, e);
+        protected virtual void OnMouseUp(MouseEventArgs e) => MouseUp?.Invoke(this, e);
+        protected virtual void OnMouseWheel(MouseEventArgs e) => MouseWheel?.Invoke(this, e);
+
+        protected virtual void OnKeyDown(KeyEventArgs e) => KeyDown?.Invoke(this, e);
+        protected virtual void OnKeyPress(KeyPressEventArgs e) => KeyPress?.Invoke(this, e);
+        protected virtual void OnKeyUp(KeyEventArgs e) => KeyUp?.Invoke(this, e);
+
+        protected virtual void OnClick(EventArgs e) => Click?.Invoke(this, e);
+        protected virtual void OnDoubleClick(EventArgs e) => DoubleClick?.Invoke(this, e);
+
+        protected virtual void OnEnter(EventArgs e) => Enter?.Invoke(this, e);
+        protected virtual void OnLeave(EventArgs e) => Leave?.Invoke(this, e);
+
+        protected virtual void OnValidating(CancelEventArgs e) => Validating?.Invoke(this, e);
+        protected virtual void OnValidated(CancelEventArgs e) => Validated?.Invoke(this, e);
+
+        protected virtual void OnMove(EventArgs e) => Move?.Invoke(this, e);
+        protected virtual void OnResize(EventArgs e) => Resize?.Invoke(this, e);
+
+        private static readonly object EventPaint = new();
+        protected virtual void OnPaint(PaintEventArgs e) => ((PaintEventHandler)base.Events[EventPaint])?.Invoke(this, e);
+        protected virtual void OnPaintBackground(PaintEventArgs e) {}
+
+        protected virtual void OnAutoSizeChanged(EventArgs e) => AutoSizeChanged?.Invoke(this, e);
+        protected virtual void OnBackColorChanged(EventArgs e) => BackColorChanged?.Invoke(this, e);
+        protected virtual void OnBackgroundImageChanged(EventArgs e) => BackgroundImageChanged?.Invoke(this, e);
+        protected virtual void OnBackgroundImageLayoutChanged(EventArgs e) => BackgroundImageLayoutChanged?.Invoke(this, e);
+        protected virtual void OnContextMenuStripChanged(EventArgs e) => ContextMenuStripChanged?.Invoke(this, e);
+        protected virtual void OnDockChanged(EventArgs e) => DockChanged?.Invoke(this, e);
+        protected virtual void OnEnableChanged(EventArgs e) => EnabledChanged?.Invoke(this, e);
+        protected virtual void OnForeColorChanged(EventArgs e) => ForeColorChanged?.Invoke(this, e);
+        protected virtual void OnFontChange(EventArgs e) => FontChanged?.Invoke(this, e);
+        protected virtual void OnLocationChanged(EventArgs e) => LocationChanged?.Invoke(this, e);
+        protected virtual void OnMarginChanged(EventArgs e) => MarginChanged?.Invoke(this, e);
+        protected virtual void OnPaddingChanged(EventArgs e) => PaddingChanged?.Invoke(this, e);
+        protected virtual void OnParentChanged(EventArgs e) => ParentChanged?.Invoke(this, e);
+        protected virtual void OnRegionChanged(EventArgs e) => RegionChanged?.Invoke(this, e);
+        protected virtual void OnSizeChanged(EventArgs e) => SizeChanged?.Invoke(this, e);
+        protected virtual void OnStyleChanged(EventArgs e) => StyleChanged?.Invoke(this, e);
+        protected virtual void OnSystemColorsChanged(EventArgs e) => SystemColorsChanged?.Invoke(this, e);
+        protected virtual void OnTextChanged(EventArgs e) => TextChanged?.Invoke(this, e);
+        protected virtual void OnVisibleChanged(EventArgs e) => VisibleChanged?.Invoke(this, e);
+
+        protected virtual void OnControlAdded(ControlEventArgs e) => ControlAdded?.Invoke(this, e);
+        protected virtual void OnControlRemoved(ControlEventArgs e) => ControlRemoved?.Invoke(this, e);
+        protected virtual void OnHandleCreated(EventArgs e) => HandleCreated?.Invoke(this, e);
+        protected virtual void OnHandleDestroyed(EventArgs e) => HandleDestroyed?.Invoke(this, e);
+
+        protected virtual void OnGiveFeedback(GiveFeedbackEventArgs e) => GiveFeedback?.Invoke(this, e);
+
+        protected virtual void OnCreateControl() { }
+        #endregion
 
         private static List<Keys> _lstModifierKeys = new();
         /// <summary>

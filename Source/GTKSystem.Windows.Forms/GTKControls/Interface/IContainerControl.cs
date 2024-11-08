@@ -5,7 +5,7 @@
 namespace System.Windows.Forms
 {
     /// <summary>
-    ///  Provides functionality for a control to parent other controls.
+    ///  Provides functionality for a control to _parent other controls.
     /// </summary>
     public interface IContainerControl
     {

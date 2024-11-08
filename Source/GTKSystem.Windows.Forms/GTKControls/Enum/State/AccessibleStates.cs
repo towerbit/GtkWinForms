@@ -88,8 +88,8 @@ namespace System.Windows.Forms
         Busy = 0x800,
 
         /// <summary>
-        ///  The object is not fixed to the boundary of its parent object, and
-        ///  does not move automatically along with the parent.
+        ///  The object is not fixed to the boundary of its _parent object, and
+        ///  does not move automatically along with the _parent.
         /// </summary>
         Floating = 0x1000,
 

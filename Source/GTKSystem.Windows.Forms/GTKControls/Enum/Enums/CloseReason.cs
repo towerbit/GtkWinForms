@@ -20,7 +20,7 @@ namespace System.Windows.Forms
         WindowsShutDown = 1,
 
         /// <summary>
-        ///  The parent form of this MDI form is closing.
+        ///  The _parent form of this MDI form is closing.
         /// </summary>
         MdiFormClosing = 2,
 
