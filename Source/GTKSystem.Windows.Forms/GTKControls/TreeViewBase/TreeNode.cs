@@ -86,8 +86,6 @@ namespace System.Windows.Forms
             get => _IsChecked; set { _IsChecked = value; if (this.treeView != null) { this.treeView.SetChecked(this, value); } }
         }
 
-        //public string FullPath { get; set; }
-        
         public string FullPath
         {
             get
@@ -96,13 +94,13 @@ namespace System.Windows.Forms
                 if (treeView != null)
                 {
                     path = string.Format("{0}{1}{2}", Parent?.FullPath ?? "", treeView.PathSeparator, this.Text);
-                    if (path.StartsWith(PathSeparator))
+                    if (path.StartsWith(treeView.PathSeparator))
                         path = path.Substring(1);
                 }
                 return path;
             }
         }
-
+        private bool _IsSelected = false;
         public bool IsSelected
         {
             get=> _IsSelected; set { _IsSelected = value; if (this.treeView != null) { this.treeView.SetSelected(this, value); } }
