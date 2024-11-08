@@ -17,6 +17,9 @@ namespace GTKWinFormsApp
         {
             InitializeComponent();
             this.Shown += Form4_Shown;
+
+            button5.Text = "Font Dialog";
+            button5.Click += button5_Click;
         }
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
@@ -95,16 +98,16 @@ namespace GTKWinFormsApp
 
         private void button9_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("test message test message \ntest messagetest message", "疑问", MessageBoxButtons.RetryCancel, MessageBoxIcon.Question);
+            MessageBox.Show("test message test message test messagetest message test message test message test messagetest message test message test message test messagetest message test message test message test messagetest message test message test message test messagetest message", "疑问", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             MessageBox.Show("test message test message \ntest messagetest message", "警告", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void button5_Click(object sender, EventArgs e)
         {
             FontDialog fontDialog = new FontDialog();
-            fontDialog.Font = button10.Font;
+            fontDialog.Font = button5.Font;
             if (fontDialog.ShowDialog() == DialogResult.OK)
-                button10.Font = fontDialog.Font;
+                button5.Font = fontDialog.Font;
         }
 
         private void vScrollBar1_ValueChanged(object sender, EventArgs e)
