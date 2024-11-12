@@ -13,9 +13,9 @@ namespace System.Windows.Forms
 {
     public class TreeNode: ICloneable, ISerializable, IEquatable<TreeNode>
     {
-        //格式，各级索引并集：1,2,3....
+        //格式，各级索引并集：0,1,2,3....
         private string index = "";
-        internal string Index { get { return index; } set { index = value; } }
+        public string Index { get { return index; } internal set { index = value ?? ""; } }
         internal Gtk.TreeIter TreeIter = Gtk.TreeIter.Zero;
         private TreeNode _parent;
         private TreeView _treeView;
@@ -86,7 +86,7 @@ namespace System.Windows.Forms
         private bool _IsChecked;
         public bool Checked
         {
-            get => _IsChecked; set { _IsChecked = value; if (this.TreeView != null) { this.TreeView.SetChecked(this, value); } }
+            get => _IsChecked; set { _IsChecked = value; TreeView?.SetChecked(this, value); }
         }
 
         public string FullPath
@@ -106,18 +106,13 @@ namespace System.Windows.Forms
         private bool _IsSelected = false;
         public bool IsSelected
         {
-            get=> _IsSelected; set { _IsSelected = value; if (_treeView != null) { _treeView.SetSelected(this, value); } }
+            get=> _IsSelected; set { _IsSelected = value; TreeView?.SetSelected(this, value); }
         }
         public bool IsExpanded
         {
             get
             {
-                if (_treeView != null)
-                {
-                    return _treeView.GetNodeExpanded(this);
-                }
-                else
-                    return false;
+                return TreeView?.GetNodeExpanded(this) == true;
             }
         }
 
@@ -125,12 +120,12 @@ namespace System.Windows.Forms
         {
             get
             {
-                if (Parent == null)
-                {
+                if (parent == null)
                     return 0;
-                }
-
-                return Parent.Level + 1;
+                else if (TreeView != null && parent.Equals(TreeView.root))
+                    return 0;
+                else
+                    return parent.Level + 1;
             }
         }
         public int ImageIndex { get; set; }
@@ -140,35 +135,19 @@ namespace System.Windows.Forms
         public int StateImageIndex { get; set; }
         public string StateImageKey { get; set; }
         public void Expand(){
-            if (this.TreeView != null) 
-            {
-                this.TreeView.SetExpandNode(this, false); 
-            }
+            TreeView?.SetExpandNode(this, false);
         }
         public void ExpandAll()
         {
-            if (this.TreeView != null) 
-            {
-                this.TreeView.SetExpandNode(this, true); 
-            }
+            TreeView?.SetExpandNode(this, true);
         }
         public void Collapse()
         {
-            if (this.TreeView != null) 
-            {
-                this.TreeView.SetCollapseNode(this); 
-            }
+            TreeView?.SetCollapseNode(this);
         }
         public object Clone()
         {
-            TreeNode newnode = new TreeNode(this.TreeView);
-            Reflection.PropertyInfo[] props = newnode.GetType().GetProperties(Reflection.BindingFlags.Public | Reflection.BindingFlags.Instance);
-            foreach(var pro in props)
-            {
-                if (pro.GetSetMethod()!=null)
-                    pro.SetValue(newnode, pro.GetValue(this));
-            }
-            return newnode;
+            return ((ArrayList)(new ArrayList() { this }).Clone())[0];
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -178,7 +157,7 @@ namespace System.Windows.Forms
 
         public bool Equals([AllowNull] TreeNode other)
         {
-            return other.Index == this.Index && other.Text == this.Text && other.Level == this.Level;
+            return other != null && other.Index == this.Index && other.Name == this.Name && other.Text == this.Text && other.Level == this.Level;
         }
     }
 }
