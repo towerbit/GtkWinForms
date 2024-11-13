@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using System.Collections;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Linq;
 using System.Windows.Forms.GtkRender;
 
@@ -30,13 +29,12 @@ namespace System.Windows.Forms
         }
         public override void Renderer()
         {
-            var renderer = new CellRendererToggleValue();
+            var renderer = new CellRendererToggleValue(this);
             renderer.Activatable = this.ReadOnly == false;
             renderer.Mode = CellRendererMode.Activatable;
             renderer.Height = RowHeight;
             renderer.Width = Width;
             renderer.Toggled += CellName_Toggled;
-
             base.PackStart(renderer, true);
             base.AddAttribute(renderer, "cellvalue", this.DisplayIndex);
             base.Sizing = TreeViewColumnSizing.GrowOnly;
@@ -74,14 +72,13 @@ namespace System.Windows.Forms
         }
         public override void Renderer()
         {
-            var renderer = new CellRendererToggleValue();
+            var renderer = new CellRendererToggleValue(this);
             renderer.Activatable = this.ReadOnly == false;
             renderer.Mode = CellRendererMode.Activatable;
             renderer.Radio = true;
             renderer.Height = RowHeight;
             renderer.Width = Width;
             renderer.Toggled += CellName_Toggled;
-
             base.PackStart(renderer, true);
             base.AddAttribute(renderer, "cellvalue", this.DisplayIndex);
             base.Sizing = TreeViewColumnSizing.GrowOnly;
@@ -119,7 +116,7 @@ namespace System.Windows.Forms
         }
         public override void Renderer()
         {
-            CellRendererComboValue renderer = new CellRendererComboValue();
+            CellRendererComboValue renderer = new CellRendererComboValue(this);
             renderer.Editable = this.ReadOnly == false && _gridview.ReadOnly == false;
             renderer.Edited += Renderer_Edited;
             renderer.TextColumn = 0;
@@ -181,7 +178,7 @@ namespace System.Windows.Forms
         }
         public override void Renderer()
         {
-            var renderer = new CellRendererButtonValue();
+            var renderer = new CellRendererButtonValue(this);
             renderer.Editable = false;
             renderer.Height = RowHeight;
             renderer.Width = Width;
@@ -278,13 +275,14 @@ namespace System.Windows.Forms
         }
         public virtual void Renderer()
         {
-            var renderer = new CellRendererValue();
+            var renderer = new CellRendererValue(this);
             renderer.Editable = this.ReadOnly == false && _gridview.ReadOnly == false;
             renderer.Edited += Renderer_Edited;
             renderer.Mode = CellRendererMode.Editable;
             renderer.PlaceholderText = "---";
             renderer.Markup = this.Markup;
             renderer.Width = Width;
+            renderer.Height = RowHeight;
             if (_gridview != null)
             {
                 if (_gridview.DefaultCellStyle?.WrapMode == DataGridViewTriState.True)

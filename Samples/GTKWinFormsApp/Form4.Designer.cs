@@ -99,9 +99,8 @@ namespace GTKWinFormsApp
             splitContainer1.Panel2.Controls.Add(button5);
             splitContainer1.Panel2.Controls.Add(panel1);
             splitContainer1.Panel2.Controls.Add(button3);
-            splitContainer1.Size = new System.Drawing.Size(696, 375);
-            splitContainer1.SplitterDistance = 206;
-            splitContainer1.SplitterWidth = 3;
+            splitContainer1.Size = new System.Drawing.Size(992, 441);
+            splitContainer1.SplitterDistance = 265;
             splitContainer1.TabIndex = 0;
             // 
             // button2

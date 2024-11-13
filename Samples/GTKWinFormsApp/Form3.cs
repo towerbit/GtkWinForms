@@ -41,7 +41,7 @@ namespace GTKWinFormsApp
             //    g.DrawRectangle(new Pen((Color)Color.Red, 5), new Rectangle(0, 0, 200, 200));
             //    // g.Dispose();
 
-                 
+
             //   // panel1.Controls.Add(m);
             //   // panel1.Show();
             //    panel1.Refresh();
@@ -174,14 +174,10 @@ namespace GTKWinFormsApp
             panel1.Show();
         }
 
-        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
-            label1.Text = hScrollBar1.Value.ToString();
-        }
-
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            label1.Text = vScrollBar1.Value.ToString();
+            Form2 f1 = new Form2();
+            f1.Show(this);
         }
     }
 }
