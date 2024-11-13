@@ -72,6 +72,7 @@ namespace GTKWinFormsApp
             linkLabel1 = new LinkLabel();
             trackBar1 = new TrackBar();
             panel1 = new Panel();
+            button4 = new Button();
             button2 = new Button();
             button3 = new Button();
             panel3 = new Panel();
@@ -95,8 +96,7 @@ namespace GTKWinFormsApp
             menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, ssssToolStripMenuItem1 });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(5, 2, 0, 2);
-            menuStrip1.Size = new System.Drawing.Size(767, 25);
+            menuStrip1.Size = new System.Drawing.Size(949, 28);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -161,7 +161,7 @@ namespace GTKWinFormsApp
             toolStrip2.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripLabel1, toolStripSeparator1, toolStripDropDownButton1, toolStripSplitButton1, toolStripSeparator2, toolStripComboBox1, toolStripTextBox1, toolStripProgressBar1 });
             toolStrip2.Location = new System.Drawing.Point(0, 25);
             toolStrip2.Name = "toolStrip2";
-            toolStrip2.Size = new System.Drawing.Size(767, 27);
+            toolStrip2.Size = new System.Drawing.Size(949, 28);
             toolStrip2.TabIndex = 2;
             toolStrip2.Text = "toolStrip2";
             // 
@@ -249,10 +249,9 @@ namespace GTKWinFormsApp
             // 
             button1.Cursor = Cursors.Hand;
             button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, 0);
-            button1.Location = new System.Drawing.Point(453, 87);
-            button1.Margin = new Padding(2, 3, 2, 3);
+            button1.Location = new System.Drawing.Point(509, 102);
             button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(269, 49);
+            button1.Size = new System.Drawing.Size(278, 58);
             button1.TabIndex = 3;
             button1.Text = "打开主窗口";
             button1.UseVisualStyleBackColor = true;
@@ -283,8 +282,7 @@ namespace GTKWinFormsApp
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripProgressBar2, toolStripDropDownButton2, toolStripSplitButton2 });
             statusStrip1.Location = new System.Drawing.Point(0, 399);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Padding = new Padding(1, 0, 11, 0);
-            statusStrip1.Size = new System.Drawing.Size(767, 26);
+            statusStrip1.Size = new System.Drawing.Size(949, 26);
             statusStrip1.TabIndex = 4;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -346,10 +344,9 @@ namespace GTKWinFormsApp
             // label1
             // 
             label1.AutoSize = true;
-            label1.BackColor = System.Drawing.Color.IndianRed;
-            label1.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Underline | System.Drawing.FontStyle.Strikeout);
-            label1.Location = new System.Drawing.Point(197, 285);
-            label1.Margin = new Padding(2, 0, 2, 0);
+            label1.BackColor = System.Drawing.Color.FromArgb(192, 255, 192);
+            label1.Font = new System.Drawing.Font("Tahoma", 15F, System.Drawing.FontStyle.Underline);
+            label1.Location = new System.Drawing.Point(320, 318);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(90, 24);
             label1.TabIndex = 5;
@@ -358,25 +355,23 @@ namespace GTKWinFormsApp
             // linkLabel1
             // 
             linkLabel1.AutoSize = true;
-            linkLabel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Strikeout);
-            linkLabel1.Location = new System.Drawing.Point(194, 216);
-            linkLabel1.Margin = new Padding(2, 0, 2, 0);
+            linkLabel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F);
+            linkLabel1.Location = new System.Drawing.Point(509, 189);
             linkLabel1.Name = "linkLabel1";
-            linkLabel1.Size = new System.Drawing.Size(66, 17);
+            linkLabel1.Size = new System.Drawing.Size(191, 20);
             linkLabel1.TabIndex = 6;
             linkLabel1.TabStop = true;
-            linkLabel1.Text = "linkLabel1";
+            linkLabel1.Text = "https://www.gtkapp.com";
             // 
             // trackBar1
             // 
             trackBar1.BackColor = System.Drawing.SystemColors.ControlLight;
             trackBar1.LargeChange = 6;
-            trackBar1.Location = new System.Drawing.Point(311, 87);
-            trackBar1.Margin = new Padding(2, 3, 2, 3);
+            trackBar1.Location = new System.Drawing.Point(333, 102);
             trackBar1.Maximum = 100;
             trackBar1.Name = "trackBar1";
             trackBar1.Orientation = Orientation.Vertical;
-            trackBar1.Size = new System.Drawing.Size(45, 247);
+            trackBar1.Size = new System.Drawing.Size(56, 173);
             trackBar1.TabIndex = 7;
             trackBar1.TickFrequency = 2;
             trackBar1.TickStyle = TickStyle.Both;
@@ -389,20 +384,30 @@ namespace GTKWinFormsApp
             panel1.AutoScroll = true;
             panel1.BackColor = System.Drawing.Color.MistyRose;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(button4);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button3);
-            panel1.Location = new System.Drawing.Point(453, 179);
-            panel1.Margin = new Padding(2, 3, 2, 3);
+            panel1.Location = new System.Drawing.Point(509, 232);
             panel1.Name = "panel1";
             panel1.Size = new System.Drawing.Size(270, 123);
             panel1.TabIndex = 8;
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(190, 10);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(135, 53);
+            button4.TabIndex = 2;
+            button4.Text = "列表视图";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // button2
             // 
             button2.Location = new System.Drawing.Point(10, 8);
             button2.Margin = new Padding(2, 3, 2, 3);
             button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(126, 49);
+            button2.Size = new System.Drawing.Size(135, 53);
             button2.TabIndex = 0;
             button2.Text = "分割容器布局";
             button2.UseVisualStyleBackColor = true;
@@ -436,7 +441,7 @@ namespace GTKWinFormsApp
             panel5.Location = new System.Drawing.Point(23, 228);
             panel5.Margin = new Padding(2, 3, 2, 3);
             panel5.Name = "panel5";
-            panel5.Size = new System.Drawing.Size(140, 65);
+            panel5.Size = new System.Drawing.Size(250, 95);
             panel5.TabIndex = 10;
             panel5.Scroll += panel5_Scroll;
             // 
@@ -453,10 +458,9 @@ namespace GTKWinFormsApp
             // progressBar1
             // 
             progressBar1.Cursor = Cursors.WaitCursor;
-            progressBar1.Location = new System.Drawing.Point(377, 340);
-            progressBar1.Margin = new Padding(2, 3, 2, 3);
+            progressBar1.Location = new System.Drawing.Point(29, 427);
             progressBar1.Name = "progressBar1";
-            progressBar1.Size = new System.Drawing.Size(345, 25);
+            progressBar1.Size = new System.Drawing.Size(758, 29);
             progressBar1.Step = 1;
             progressBar1.TabIndex = 11;
             progressBar1.Value = 10;
@@ -481,8 +485,8 @@ namespace GTKWinFormsApp
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(986, 500);
             AutoScroll = true;
+            ClientSize = new System.Drawing.Size(949, 500);
             ContextMenuStrip = contextMenuStrip1;
             Controls.Add(vScrollBar1);
             Controls.Add(hScrollBar1);
@@ -565,7 +569,6 @@ namespace GTKWinFormsApp
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem c菜单ToolStripMenuItem;
         private ProgressBar progressBar1;
-        private HScrollBar hScrollBar1;
-        private VScrollBar vScrollBar1;
+        private Button button4;
     }
 }
