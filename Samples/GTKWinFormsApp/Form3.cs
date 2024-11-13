@@ -179,15 +179,5 @@ namespace GTKWinFormsApp
             Form2 f1 = new Form2();
             f1.Show(this);
         }
-
-        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            label1.Text = hScrollBar1.Value.ToString();
-        }
-
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            label1.Text = vScrollBar1.Value.ToString();
-        }
     }
 }

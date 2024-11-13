@@ -79,8 +79,6 @@ namespace GTKWinFormsApp
             panel5 = new Panel();
             label2 = new Label();
             progressBar1 = new ProgressBar();
-            hScrollBar1 = new HScrollBar();
-            vScrollBar1 = new VScrollBar();
             menuStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
@@ -465,22 +463,6 @@ namespace GTKWinFormsApp
             progressBar1.TabIndex = 11;
             progressBar1.Value = 10;
             // 
-            // hScrollBar1
-            // 
-            hScrollBar1.Location = new System.Drawing.Point(23, 317);
-            hScrollBar1.Name = "hScrollBar1";
-            hScrollBar1.Size = new System.Drawing.Size(261, 17);
-            hScrollBar1.TabIndex = 12;
-            hScrollBar1.Scroll += hScrollBar1_Scroll;
-            // 
-            // vScrollBar1
-            // 
-            vScrollBar1.Location = new System.Drawing.Point(266, 91);
-            vScrollBar1.Name = "vScrollBar1";
-            vScrollBar1.Size = new System.Drawing.Size(18, 191);
-            vScrollBar1.TabIndex = 13;
-            vScrollBar1.Scroll += vScrollBar1_Scroll;
-            // 
             // Form3
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -488,8 +470,6 @@ namespace GTKWinFormsApp
             AutoScroll = true;
             ClientSize = new System.Drawing.Size(949, 500);
             ContextMenuStrip = contextMenuStrip1;
-            Controls.Add(vScrollBar1);
-            Controls.Add(hScrollBar1);
             Controls.Add(progressBar1);
             Controls.Add(panel5);
             Controls.Add(panel3);
