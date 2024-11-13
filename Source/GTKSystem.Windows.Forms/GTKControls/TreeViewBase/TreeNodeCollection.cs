@@ -25,7 +25,7 @@ namespace System.Windows.Forms
             }
             foreach (TreeNode node in nodes)
             {
-                Add(node);
+                Add(node);// 注意：这里不会为 node 的子节点自动赋值 TreeView
             }
 
         }

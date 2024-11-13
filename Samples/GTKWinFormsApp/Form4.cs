@@ -26,6 +26,8 @@ namespace GTKWinFormsApp
             button5.Click += button5_Click;
             button2.Text = "Close";
             button2.Click += (_, _) => this.Close();
+
+            treeView1.AfterSelect += (_, e) => Debug.Print($"==>AfterSelect: FullPath={e.Node.FullPath}");
         }
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
@@ -75,12 +77,12 @@ namespace GTKWinFormsApp
             Debug.Print($"==> OnMove: {this.Location}");
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            Debug.Print($"==> OnResize: {this.Size}");
-            Debug.Print($"this.WindowState ={this.WindowState}");
-        }
+        //protected override void OnResize(EventArgs e)
+        //{
+        //    base.OnResize(e);
+        //    Debug.Print($"==> OnResize: {this.Size}");
+        //    Debug.Print($"this.WindowState ={this.WindowState}");
+        //}
 
         protected override void OnVisibleChanged(EventArgs e)
         {
@@ -108,12 +110,12 @@ namespace GTKWinFormsApp
             Debug.Print("==> OnDeactivate");
         }
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            Debug.Print("==> OnSizeChanged");
-            Debug.Print($"Size = {this.Size}");
-        }
+        //protected override void OnSizeChanged(EventArgs e)
+        //{
+        //    base.OnSizeChanged(e);
+        //    Debug.Print("==> OnSizeChanged");
+        //    Debug.Print($"Size = {this.Size}");
+        //}
 
         protected override void OnLoad(EventArgs e)
         {

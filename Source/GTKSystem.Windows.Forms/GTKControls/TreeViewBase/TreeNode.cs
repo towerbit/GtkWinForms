@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using GLib;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace System.Windows.Forms
 {
@@ -21,7 +22,14 @@ namespace System.Windows.Forms
         private TreeView _treeView;
         public TreeView TreeView 
         {
-            get => _treeView;
+            get
+            {
+                if (_treeView == null)
+                {
+                    _treeView = _parent?.TreeView;
+                }
+                return _treeView;
+            }
             set => _treeView = value;
         }
 
@@ -93,10 +101,12 @@ namespace System.Windows.Forms
         {
             get
             {
-                string path = string.Empty;
+                string path = this.Text; 
                 if (this.TreeView != null)
                 {
+                    // 注意：this.Text 中尽量不要使用 TreeView.PathSeparator 字符
                     path = string.Format("{0}{1}{2}", Parent?.FullPath ?? "", this.TreeView.PathSeparator, this.Text);
+                    // 移除根分隔符，与 WinForms.TreeView.Node.FullPath 输出保持一致
                     if (path.StartsWith(this.TreeView.PathSeparator))
                         path = path.Substring(1);
                 }
@@ -120,12 +130,12 @@ namespace System.Windows.Forms
         {
             get
             {
-                if (parent == null)
+                if (_parent == null)
                     return 0;
-                else if (TreeView != null && parent.Equals(TreeView.root))
+                else if (TreeView != null && _parent.Equals(TreeView.root))
                     return 0;
                 else
-                    return parent.Level + 1;
+                    return _parent.Level + 1;
             }
         }
         public int ImageIndex { get; set; }
