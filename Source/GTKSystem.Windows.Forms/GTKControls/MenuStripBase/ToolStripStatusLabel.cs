@@ -7,36 +7,16 @@ namespace System.Windows.Forms
 
 	public class ToolStripStatusLabel : ToolStripLabel
 	{
+        public ToolStripStatusLabel() : base() { }
 
+		public ToolStripStatusLabel(string text) : base(text) { }
 
-        public ToolStripStatusLabel()
-		{
-			
-		}
+		public ToolStripStatusLabel(string text, Image image) : base(text, image) { }
 
-		public ToolStripStatusLabel(string text)
-		{
-			
-		}
+		public ToolStripStatusLabel(string text, Image image, EventHandler onClick) : base(text, image, onClick) { }
 
-		public ToolStripStatusLabel(Image image)
-		{
-			
-		}
-
-		public ToolStripStatusLabel(string text, Image image)
-		{
-			
-		}
-
-		public ToolStripStatusLabel(string text, Image image, EventHandler onClick)
-		{
-			
-		}
-
-		public ToolStripStatusLabel(string text, Image image, EventHandler onClick, string name):base(text,image,onClick,name)
-		{
-        }
+		public ToolStripStatusLabel(string text, Image image, EventHandler onClick, string name) : base(text, image, onClick, name) { }
+		
 
         [DefaultValue(Border3DStyle.Flat)]
         public Border3DStyle BorderStyle { get; set; }

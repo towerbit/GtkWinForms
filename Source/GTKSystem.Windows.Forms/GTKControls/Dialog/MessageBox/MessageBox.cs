@@ -255,7 +255,20 @@ namespace System.Windows.Forms
             else if (resp == Gtk.ResponseType.None)
                 return DialogResult.None;
             else if (resp == Gtk.ResponseType.DeleteEvent)
-                return DialogResult.None;
+            {
+                //return DialogResult.None;
+                // 对话框中通过 ESC 或者 关闭按钮关闭时，返回 DialogResult.None 与 WinForms 中行为不一致
+                if (buttons == MessageBoxButtons.OKCancel
+                    || buttons == MessageBoxButtons.YesNoCancel
+                    || buttons == MessageBoxButtons.RetryCancel)
+                    return DialogResult.Cancel;
+                else if (buttons == MessageBoxButtons.YesNo)
+                    return DialogResult.No;
+                else if (buttons == MessageBoxButtons.AbortRetryIgnore)
+                    return DialogResult.Ignore;
+                else
+                    return DialogResult.None;
+            }
             else
                 return DialogResult.None;
         }

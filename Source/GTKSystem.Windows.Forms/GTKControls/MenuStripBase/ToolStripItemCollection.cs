@@ -1,11 +1,6 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
-using System.Collections;
-using System.Xml.Linq;
-using GLib;
-using Pango;
 
 namespace System.Windows.Forms
 {
@@ -84,12 +79,11 @@ namespace System.Windows.Forms
 
         public ToolStripItem Add(string text, Image image, EventHandler onClick)
         {
-            ToolStripItem toolStripItem = new ToolStripLabel();
-            AddMemu(toolStripItem);
-            return toolStripItem;
+            ToolStripItem toolStripItem = new ToolStripLabel(text, image, onClick);
+            return Add(toolStripItem);
         }
 
-        public int AddMemu(ToolStripItem item)
+        private int AddMemu(ToolStripItem item)
         {
             item.Parent = owner;
             if (isToolStrip == true)
@@ -122,27 +116,64 @@ namespace System.Windows.Forms
             return Count;
         }
 
-        public void AddRange(ToolStripItem[] toolStripItems)
-        {
-            for (int i = 0; i < toolStripItems.Length; i++)
-            {
-                AddMemu(toolStripItems[i]);
-            }
-        }
+        //public void AddRange(ToolStripItem[] toolStripItems)
+        //{
+        //    for (int i = 0; i < toolStripItems.Length; i++)
+        //    {
+        //        AddMemu(toolStripItems[i]);
+        //    }
+        //}
 
         public void AddRange(ToolStripItemCollection toolStripItems)
         {
             int count = toolStripItems.Count;
             for (int i = 0; i < count; i++)
-            {
                 AddMemu(toolStripItems[i]);
-            }
         }
+
+        
         //-------------------
         public new ToolStripItem this[int index]
         {
             get { return base[index]; }
             set { menu.Insert(value.Widget, index); base[index] = value; }
+        }
+
+        public new ToolStripItem Add(ToolStripItem toolStripItem)
+        {
+            AddMemu(toolStripItem);
+            return toolStripItem;
+        }
+
+        public new void AddRange(IEnumerable<ToolStripItem> toolStripItems)
+        {
+            foreach (ToolStripItem item in toolStripItems)
+                AddMemu(item);
+        }
+
+
+        public new void Clear()
+        {
+            var items = this.ToArray();
+            for (int i = 0; i < items.Length; i++)
+                Remove(items[i]);
+        }
+
+        public new void Remove(ToolStripItem item)
+        {
+            if (item.Parent == owner 
+                && base.Contains(item))
+            {
+                if (isToolStrip == true)
+                    toolStrip.self.Remove(item.Widget);
+                else if (isStatusStrip == true)
+                    statusStrip.self.Remove(item.Widget);
+                else if (isMenuStrip == true)
+                    toolStrip.self.Remove(item.Widget);
+                else if (isToolStripDropDown == true)
+                    menu.Remove(item.Widget);
+                base.Remove(item);
+            }
         }
     }
 }
