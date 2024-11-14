@@ -79,3 +79,4 @@ $RECYCLE.BIN/
 /Source/GTKSystem.Windows.Forms/obj/GTKSystem.Windows.Forms.csproj.nuget.dgspec.json
 /Source/GTKSystem.Windows.Forms/obj/project.assets.json
 /Source/GTKSystem.Windows.Forms/obj/project.nuget.cache
+/.vs/GTKWinFormsApp/DesignTimeBuild/.dtbcache.v2
