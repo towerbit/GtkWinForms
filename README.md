@@ -138,12 +138,11 @@ GTKWinFormsApp.runtimeconfig.json
 ### 支持各种主题风格界面（windows xp、vista、7、8、10，macOS系列，等等）
 
 #### 主题风格，windows7风格界面
-![windows7风格界面](/pic/windows7-1.png)
 ![windows7风格界面](/pic/windows7-0.png)
+#### 主题风格，window10黑色风格界面
+![mwindow10黑色风格界面](/pic/Windows-10-White.png)
 #### 主题风格，macOS风格界面
 ![macOS风格界面](/pic/macOS-1.png)
-#### 主题风格，window10黑色风格界面
-![mwindow10黑色风格界面](/pic/Windows-10-Dark.png)
 
 ### 支持GTKSystem，获取技术服务
 
@@ -152,7 +151,7 @@ GTKWinFormsApp.runtimeconfig.json
 | 帮助开发环境安装       | 包括套餐一服务        |   包含所有套餐服务  |
 | 运行环境gtk\dotnet安装 | 提供二次开发技术支持  |   提供二次开发技术支持    |
 | 上手开发疑难解答       | 为用户开发协商指定的功能或接口至少3项 | 为用户开发功能或接口不少于9项  |
-| 帮助解决程序异常      | 提供定制的主题风格界面样式和一些常用扩展控件    |  提供定制的主题风格界面样式和一些常用扩展控件                           |
+| 提供应用开发技术支持      | 提供定制的主题风格界面样式和一些常用扩展控件    |  提供定制的主题风格界面样式和一些常用扩展控件                           |
 
  ![支持GTKSystem](/pic/love_reward_qrcode_.png)
  ![联系GTKSystem](/pic/contact_weixin.png)

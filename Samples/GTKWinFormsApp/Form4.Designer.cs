@@ -32,13 +32,16 @@ namespace GTKWinFormsApp
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            TreeNode treeNode1 = new TreeNode("节点3");
-            TreeNode treeNode2 = new TreeNode("节点2", new TreeNode[] { treeNode1 });
-            TreeNode treeNode3 = new TreeNode("节点4");
-            TreeNode treeNode4 = new TreeNode("节点0", new TreeNode[] { treeNode2, treeNode3 });
-            TreeNode treeNode5 = new TreeNode("节点1");
+            TreeNode treeNode6 = new TreeNode("节点3");
+            TreeNode treeNode7 = new TreeNode("节点2", new TreeNode[] { treeNode6 });
+            TreeNode treeNode8 = new TreeNode("节点4");
+            TreeNode treeNode9 = new TreeNode("节点0", new TreeNode[] { treeNode7, treeNode8 });
+            TreeNode treeNode10 = new TreeNode("节点1");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form4));
             splitContainer1 = new SplitContainer();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
             button2 = new Button();
             button1 = new Button();
             button10 = new Button();
@@ -62,12 +65,18 @@ namespace GTKWinFormsApp
             button4 = new Button();
             button3 = new Button();
             label1 = new Label();
+            statusStrip1 = new StatusStrip();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            toolStripStatusLabel2 = new ToolStripStatusLabel();
+            toolStripStatusLabel3 = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            tabControl1.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
             panel1.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -82,6 +91,7 @@ namespace GTKWinFormsApp
             // 
             splitContainer1.Panel1.AutoScroll = true;
             splitContainer1.Panel1.BackColor = System.Drawing.Color.Transparent;
+            splitContainer1.Panel1.Controls.Add(tabControl1);
             splitContainer1.Panel1.Controls.Add(button2);
             splitContainer1.Panel1.Controls.Add(button1);
             splitContainer1.Panel1.Controls.Add(button10);
@@ -99,35 +109,66 @@ namespace GTKWinFormsApp
             splitContainer1.Panel2.Controls.Add(button5);
             splitContainer1.Panel2.Controls.Add(panel1);
             splitContainer1.Panel2.Controls.Add(button3);
-            splitContainer1.Size = new System.Drawing.Size(992, 441);
+            splitContainer1.Size = new System.Drawing.Size(842, 375);
             splitContainer1.SplitterDistance = 265;
             splitContainer1.TabIndex = 0;
             // 
+            // tabControl1
+            // 
+            tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new System.Drawing.Point(19, 84);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new System.Drawing.Size(226, 253);
+            tabControl1.TabIndex = 3;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Location = new System.Drawing.Point(4, 26);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new System.Drawing.Size(218, 223);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "tabPage1";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Location = new System.Drawing.Point(4, 26);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new System.Drawing.Size(218, 223);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "tabPage2";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
             // button2
             // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            button2.Location = new System.Drawing.Point(19, 189);
+            button2.Location = new System.Drawing.Point(23, 48);
             button2.Margin = new Padding(2, 3, 2, 3);
             button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(93, 25);
+            button2.Size = new System.Drawing.Size(93, 30);
             button2.TabIndex = 1;
             button2.Text = "button2";
             button2.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            button1.Location = new System.Drawing.Point(19, 39);
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            button1.Location = new System.Drawing.Point(23, 3);
             button1.Margin = new Padding(2, 3, 2, 3);
             button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(93, 130);
+            button1.Size = new System.Drawing.Size(222, 39);
             button1.TabIndex = 0;
             button1.Text = "测试按钮1";
             button1.UseVisualStyleBackColor = true;
             // 
             // button10
             // 
-            button10.Location = new System.Drawing.Point(19, 237);
+            button10.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button10.Location = new System.Drawing.Point(152, 48);
             button10.Margin = new Padding(2, 3, 2, 3);
             button10.Name = "button10";
             button10.Size = new System.Drawing.Size(93, 30);
@@ -137,15 +178,15 @@ namespace GTKWinFormsApp
             // 
             // hScrollBar1
             // 
-            hScrollBar1.Location = new System.Drawing.Point(318, 292);
+            hScrollBar1.Location = new System.Drawing.Point(209, 311);
             hScrollBar1.Name = "hScrollBar1";
-            hScrollBar1.Size = new System.Drawing.Size(202, 26);
+            hScrollBar1.Size = new System.Drawing.Size(311, 26);
             hScrollBar1.TabIndex = 8;
             hScrollBar1.ValueChanged += hScrollBar1_ValueChanged;
             // 
             // vScrollBar1
             // 
-            vScrollBar1.Location = new System.Drawing.Point(186, 150);
+            vScrollBar1.Location = new System.Drawing.Point(179, 143);
             vScrollBar1.Name = "vScrollBar1";
             vScrollBar1.Size = new System.Drawing.Size(26, 184);
             vScrollBar1.TabIndex = 7;
@@ -206,6 +247,30 @@ namespace GTKWinFormsApp
             button6.UseVisualStyleBackColor = true;
             button6.Click += button6_Click;
             // 
+            // treeView1
+            // 
+            treeView1.ImageKey = "010.jpg";
+            treeView1.ImageList = imageList1;
+            treeView1.Location = new System.Drawing.Point(49, 154);
+            treeView1.Margin = new Padding(2, 3, 2, 3);
+            treeView1.Name = "treeView1";
+            treeNode6.Name = "节点3";
+            treeNode6.Text = "节点3";
+            treeNode7.ImageIndex = 1;
+            treeNode7.Name = "节点2";
+            treeNode7.Text = "节点2";
+            treeNode8.Name = "节点4";
+            treeNode8.Text = "节点4";
+            treeNode9.Name = "节点0";
+            treeNode9.Text = "节点0";
+            treeNode10.ImageIndex = 1;
+            treeNode10.Name = "节点1";
+            treeNode10.Text = "节点1";
+            treeView1.Nodes.AddRange(new TreeNode[] { treeNode9, treeNode10 });
+            treeView1.SelectedImageIndex = 0;
+            treeView1.Size = new System.Drawing.Size(118, 103);
+            treeView1.TabIndex = 2;
+            // 
             // imageList1
             // 
             imageList1.ColorDepth = ColorDepth.Depth32Bit;
@@ -214,37 +279,6 @@ namespace GTKWinFormsApp
             imageList1.Images.SetKeyName(0, "010.jpg");
             imageList1.Images.SetKeyName(1, "timg2.jpg");
             // 
-            // treeView1
-            // 
-            treeView1.ImageKey = "010.jpg";
-            treeView1.ImageList = imageList1;
-            treeView1.Location = new System.Drawing.Point(49, 154);
-            treeView1.Margin = new Padding(2, 3, 2, 3);
-            treeView1.Name = "treeView1";
-            treeNode1.Name = "节点3";
-            treeNode1.Text = "节点3";
-            //treeNode1.TreeView = treeView1;
-            treeNode2.ImageIndex = 1;
-            treeNode2.Name = "节点2";
-            treeNode2.Text = "节点2";
-            //treeNode2.TreeView = treeView1;
-            treeNode3.Name = "节点4";
-            treeNode3.Text = "节点4";
-            //treeNode3.TreeView = treeView1;
-            treeNode4.Name = "节点0";
-            treeNode4.Text = "节点0";
-            //treeNode4.TreeView = treeView1;
-            treeNode5.ImageIndex = 1;
-            treeNode5.Name = "节点1";
-            treeNode5.Text = "节点1";
-            //treeNode5.TreeView = treeView1;
-            treeView1.Nodes.AddRange(new TreeNode[] { treeNode4, treeNode5 });
-            //treeView1.Nodes.Add(treeNode4);
-            //treeView1.Nodes.Add(treeNode5);
-            treeView1.SelectedImageIndex = 0;
-            treeView1.Size = new System.Drawing.Size(118, 103);
-            treeView1.TabIndex = 2;
-            // 
             // button5
             // 
             button5.ContextMenuStrip = contextMenuStrip1;
@@ -252,7 +286,7 @@ namespace GTKWinFormsApp
             button5.Location = new System.Drawing.Point(0, 0);
             button5.Margin = new Padding(2, 3, 2, 3);
             button5.Name = "button5";
-            button5.Size = new System.Drawing.Size(487, 42);
+            button5.Size = new System.Drawing.Size(573, 42);
             button5.TabIndex = 2;
             button5.Text = "button5";
             button5.UseVisualStyleBackColor = true;
@@ -300,10 +334,10 @@ namespace GTKWinFormsApp
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(button4);
-            panel1.Location = new System.Drawing.Point(232, 150);
+            panel1.Location = new System.Drawing.Point(209, 150);
             panel1.Margin = new Padding(2, 3, 2, 3);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(224, 101);
+            panel1.Size = new System.Drawing.Size(202, 107);
             panel1.TabIndex = 1;
             // 
             // button4
@@ -334,15 +368,43 @@ namespace GTKWinFormsApp
             label1.Location = new System.Drawing.Point(0, 0);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(696, 43);
+            label1.Size = new System.Drawing.Size(842, 43);
             label1.TabIndex = 1;
             label1.Text = "横幅栏";
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2, toolStripStatusLabel3 });
+            statusStrip1.Location = new System.Drawing.Point(0, 396);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new System.Drawing.Size(842, 22);
+            statusStrip1.TabIndex = 2;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
+            toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new System.Drawing.Size(131, 17);
+            toolStripStatusLabel2.Text = "toolStripStatusLabel2";
+            // 
+            // toolStripStatusLabel3
+            // 
+            toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            toolStripStatusLabel3.Size = new System.Drawing.Size(131, 17);
+            toolStripStatusLabel3.Text = "toolStripStatusLabel3";
             // 
             // Form4
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(696, 418);
+            ClientSize = new System.Drawing.Size(842, 418);
+            Controls.Add(statusStrip1);
             Controls.Add(splitContainer1);
             Controls.Add(label1);
             Margin = new Padding(2, 3, 2, 3);
@@ -352,9 +414,13 @@ namespace GTKWinFormsApp
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            tabControl1.ResumeLayout(false);
             contextMenuStrip1.ResumeLayout(false);
             panel1.ResumeLayout(false);
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -384,5 +450,12 @@ namespace GTKWinFormsApp
         private System.Windows.Forms.VScrollBar vScrollBar1;
         private System.Windows.Forms.HScrollBar hScrollBar1;
         private System.Windows.Forms.ImageList imageList1;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel toolStripStatusLabel2;
+        private ToolStripStatusLabel toolStripStatusLabel3;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
     }
 }

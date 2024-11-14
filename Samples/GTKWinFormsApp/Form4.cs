@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Printing;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GTKWinFormsApp
@@ -29,7 +21,32 @@ namespace GTKWinFormsApp
             button2.Click += (_, _) => this.Close();
 
             treeView1.AfterSelect += (_, e) => Debug.Print($"==>AfterSelect: FullPath={e.Node.FullPath}");
+
+            // 清除原有的状态栏组件成员
+            statusStrip1.Items.Clear();
+            // 添加新创建的状态栏标签组件
+            //List<ToolStripItem> ssLabels = new();
+            for (int i = 0; i < 3; i++)
+                //ssLabels.Add(new ToolStripStatusLabel($"Status{i:00}"));
+                statusStrip1.Items.Add(new ToolStripStatusLabel($"Status{i:00}"));
+            //statusStrip1.Items.AddRange(ssLabels);
+
+            // 都可以移除组件，
+            tabControl1.TabPages.Remove(tabPage1);
+            tabControl1.Controls.Remove(tabPage2);
+            // 都可以添加组件
+            tabControl1.TabPages.Add(new TabPage()
+            {
+                Name = "tabPage3",
+                Text = "tabPage3"
+            });
+            tabControl1.Controls.Add(new TabPage()
+            {
+                Name = "tabPage4",
+                Text = "tabPage4"
+            });
         }
+
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
         {
@@ -43,8 +60,9 @@ namespace GTKWinFormsApp
         {
             base.OnFormClosing(e);
             Debug.Print($"==> OnFormClosing");
-            if (MessageBox.Show("确定要关闭吗", "OnFormClosing",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            var result = MessageBox.Show("确定要关闭吗", "OnFormClosing",
+                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if( result == DialogResult.Cancel)
             {
                 e.Cancel = true;
             }
@@ -60,8 +78,9 @@ namespace GTKWinFormsApp
         {
             base.OnClosing(e);
             Debug.Print($"==> OnClosing");
-            if (MessageBox.Show("再次确定要关闭吗", "OnClosing",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            var result = MessageBox.Show("再次确定要关闭吗", "OnClosing",
+                                         MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if(result == DialogResult.Cancel)
             {
                 e.Cancel = true;
             }
@@ -258,7 +277,7 @@ namespace GTKWinFormsApp
 
         private void button10_Click(object sender, EventArgs e)
         {
-            treeView1.SelectedNode.Expand();
+            treeView1.SelectedNode?.Expand();
         }
        
     }
