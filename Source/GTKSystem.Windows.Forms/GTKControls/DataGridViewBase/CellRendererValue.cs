@@ -1,188 +1,208 @@
-﻿using Atk;
+﻿/*
+ * 基于GTK组件开发，兼容原生C#控件winform界面的跨平台界面组件。
+ * 使用本组件GTKSystem.Windows.Forms代替Microsoft.WindowsDesktop.App.WindowsForms，一次编译，跨平台windows、linux、macos运行
+ * 技术支持438865652@qq.com，https://www.gtkapp.com, https://gitee.com/easywebfactory, https://github.com/easywebfactory
+ * author:chenhongjin
+ */
+using Atk;
 using Gdk;
 using GLib;
 using Gtk;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
+using Pango;
 
 namespace System.Windows.Forms.GtkRender
 {
-    public class CellRendererValue : CellRendererText
+    public interface ICellRenderer
     {
-        DataGridViewColumn Column;
+        DataGridViewCell CellValue { set; }
+        DataGridViewCellStyle ColumnStyle { set; }
+        Pango.WrapMode WrapMode { get; set; }
+        int WrapWidth { get; set; }
+        int WidthChars { get; set; }
+        int Height { get; set; }
+        string Markup { get; set; }
+        bool Editable { get; set; }
+        bool Activatable { get; set; }
+        Gtk.CellRendererMode Mode { get; set; }
+    }
+
+    public class CellRendererValue : CellRendererText, ICellRenderer
+    {
+        private DataGridViewColumn Column;
+        private CellReandererUtility utility;
         public CellRendererValue(DataGridViewColumn view)
         {
             Column = view;
+            utility = new CellReandererUtility();
         }
         [Property("cellvalue")]
-        public CellValue CellValue
+        public DataGridViewCell CellValue
         {
             set
             {
                 if (value != null)
                 {
-                    value.SetTextWithStyle(Column, this);
+                    DataGridViewCellStyle style = value.Style;
+                    if (style == null)
+                        style = ColumnStyle;
+                    if (style == null)
+                        style = value.InheritedStyle;
+
+                    utility.SetTextWithStyle(this, style, value.Value);
                 }
             }
         }
+        public DataGridViewCellStyle ColumnStyle { get; set; }
+        public bool Activatable { get; set; }
+        string ICellRenderer.Markup { get; set; }
     }
-    public class CellRendererToggleValue : CellRendererToggle
+    public class CellRendererToggleValue : CellRendererToggle, ICellRenderer
     {
         DataGridViewColumn Column;
+        private CellReandererUtility utility;
         public CellRendererToggleValue(DataGridViewColumn view)
         {
             Column = view;
+            utility = new CellReandererUtility();
         }
         [Property("cellvalue")]
-        public CellValue CellValue
+        public DataGridViewCell CellValue
         {
             set
             {
                 if (value != null)
                 {
-                    this.Active = (value.Text == "1" || value.Text?.ToLower() == "true");
-                    value.SetControlWithStyle(Column, this);
+                    this.Active = (value.Value?.ToString() == "1" || value.Value?.ToString()?.ToLower() == "true");
+                    DataGridViewCellStyle style = value.Style;
+                    if (style == null)
+                        style = ColumnStyle;
+                    if (style == null)
+                        style = value.InheritedStyle;
+                    utility.SetControlWithStyle(this, style);
                 }
             }
         }
+        public DataGridViewCellStyle ColumnStyle { get; set; }
+        public Pango.WrapMode WrapMode { get; set; }
+        public int WrapWidth { get; set; }
+        public int WidthChars { get; set; }
+        public string Markup { get; set; }
+        public bool Editable { get; set; }
     }
-    public class CellRendererComboValue : CellRendererCombo
+    public class CellRendererComboValue : CellRendererCombo, ICellRenderer
     {
         DataGridViewColumn Column;
+        private CellReandererUtility utility;
         public CellRendererComboValue(DataGridViewColumn view)
         {
             Column = view;
+            utility = new CellReandererUtility();
         }
         [Property("cellvalue")]
-        public CellValue CellValue
+        public DataGridViewCell CellValue
         {
             set
             {
                 if (value != null)
                 {
-                    value.SetTextWithStyle(Column, this);
+                    DataGridViewCellStyle style = value.Style;
+                    if (style == null)
+                        style = ColumnStyle;
+                    if (style == null)
+                        style = value.InheritedStyle;
+                    utility.SetTextWithStyle(this, style, value.Value);
                 }
             }
         }
+        public DataGridViewCellStyle ColumnStyle { get; set; }
+        public bool Activatable { get; set; }
+        string ICellRenderer.Markup { get; set; }
     }
-    public class CellRendererPixbufValue : CellRendererPixbuf
+    public class CellRendererPixbufValue : CellRendererPixbuf, ICellRenderer
     {
         DataGridViewColumn Column;
+        private CellReandererUtility utility;
         public CellRendererPixbufValue(DataGridViewColumn view)
         {
             Column = view;
+            utility = new CellReandererUtility();
         }
         [Property("cellvalue")]
-        public CellValue CellValue
+        public DataGridViewCell CellValue
         {
             set
             {
                 if (value != null)
                 {
-                    if (value.ValueType == typeof(byte[]))
+                    try
                     {
-                        value.SetControlWithStyle(Column, this);
-                        this.Pixbuf = new Pixbuf((byte[])value.Value);
-                    }
-                    else
-                    {
-                        string text = value.Text;
-                        if (string.IsNullOrWhiteSpace(text) == false && this.Data.ContainsKey(text))
+                        DataGridViewCellStyle style = value.Style;
+                        if (style == null)
+                            style = ColumnStyle;
+                        if (style == null)
+                            style = value.InheritedStyle;
+                        utility.SetControlWithStyle(this, style);
+                        if (typeof(Drawing.Image).Equals(value.ValueType) || typeof(Drawing.Bitmap).Equals(value.ValueType))
                         {
-                            value.SetControlWithStyle(Column, this);
-                            if (this.Data[text] is Gdk.Pixbuf pixbuf)
-                                this.Pixbuf = pixbuf;
-                            else
-                                this.IconName = text;
+                            this.Pixbuf = ((Drawing.Image)value.Value).Pixbuf;
+                        }
+                        else if (value.ValueType == typeof(byte[]))
+                        {
+                            this.Pixbuf = new Pixbuf((byte[])value.Value);
                         }
                         else
                         {
-                            value.SetControlWithStyle(Column, this);
-                            if (string.IsNullOrWhiteSpace(text))
-                            {
-                                this.IconName = "";
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    if (text.Contains("://"))
-                                    {
-                                        HttpClient httpClient = new HttpClient();
-                                        httpClient.GetStreamAsync(text).ContinueWith((x, o) =>
-                                        {
-                                            string key = o.ToString();
-                                            try
-                                            {
-                                                Gdk.Pixbuf obuf = new Gdk.Pixbuf(x.Result);
-                                                Gdk.Pixbuf nbuf = obuf.ScaleSimple(Column.Width < 1 ? obuf.Width : Column.Width, Column.RowHeight < 1 ? obuf.Height : Column.RowHeight, Gdk.InterpType.Tiles);
-                                                if (this.Data.ContainsKey(key) == false)
-                                                    this.Data.Add(key, nbuf);
-                                                Gtk.Application.Invoke((o, s) =>
-                                                {
-                                                    this.Pixbuf = nbuf;
-                                                });
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //Console.WriteLine(text + ", " + ex.ToString());
-                                                if (this.Data.ContainsKey(key) == false)
-                                                    this.Data.Add(key, "image-missing");
-                                                Gtk.Application.Invoke((o, s) =>
-                                                {
-                                                    this.IconName = "image-missing";
-                                                });
-                                            }
-                                        }, text);
-
-                                    }
-                                    else if (text.Contains("."))
-                                    {
-                                        Gdk.Pixbuf nbuf = new Gdk.Pixbuf(text.Replace("\\\\", "//").Replace("\\", "/"));
-                                        this.Data.Add(text, nbuf);
-                                        this.Pixbuf = nbuf;
-                                    }
-                                    else
-                                    {
-                                        this.Data.Add(text, text);
-                                        this.IconName = text;
-                                    }
-                                }
-                                catch
-                                {
-                                    this.Data.Add(text, "image-missing");
-                                    this.IconName = "image-missing";
-                                }
-                            }
+                            this.Pixbuf = new Gdk.Pixbuf(value.Value.ToString().Replace("\\\\", "//").Replace("\\", "/"));
                         }
+                    }
+                    catch
+                    {
+                        this.IconName = "image-missing";
                     }
                 }
             }
         }
+        public DataGridViewCellStyle ColumnStyle { get; set; }
+        public Pango.WrapMode WrapMode { get; set; }
+        public int WrapWidth { get; set; }
+        public int WidthChars { get; set; }
+        public string Markup { get; set; }
+        public bool Editable { get; set; }
+        public bool Activatable { get; set; }
     }
-    public class CellRendererButtonValue : CellRendererText
+    public class CellRendererButtonValue : CellRendererText, ICellRenderer
     {
         DataGridViewColumn Column;
+        private CellReandererUtility utility;
         public CellRendererButtonValue(DataGridViewColumn view)
         {
             Column = view;
+            utility = new CellReandererUtility();
             this.SetAlignment(0.5f, 0.5f);
             this.Ellipsize = Pango.EllipsizeMode.End;
         }
         [Property("cellvalue")]
-        public CellValue CellValue
+        public DataGridViewCell CellValue
         {
             set
             {
                 if (value != null)
                 {
-                    value.SetTextWithStyle(Column, this);
+                    DataGridViewCellStyle style = value.Style;
+                    if (style == null)
+                        style = ColumnStyle;
+                    if (style == null)
+                        style = value.InheritedStyle;
+                    utility.SetTextWithStyle(this, style, value.Value);
+                    base.SetAlignment(0.5f, 0.5f);
                 }
             }
         }
+        public DataGridViewCellStyle ColumnStyle { get; set; }
+        public bool Activatable { get; set; }
+        string ICellRenderer.Markup { get; set; }
         protected override void OnRender(Cairo.Context cr, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, CellRendererState flags)
         {
-            widget.StyleContext.AddClass("button");
             widget.StyleContext.AddClass("GridViewCell-Button");
             widget.StyleContext.Save();
             int height = cell_area.Height;
@@ -198,112 +218,85 @@ namespace System.Windows.Forms.GtkRender
             base.OnRender(cr, widget, new Gdk.Rectangle(background_area.X, background_area.Y, background_area.Width, background_area.Height), new Gdk.Rectangle(cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height), flags);
         }
     }
-    public class CellValue : IComparable, IComparable<CellValue>, IEquatable<CellValue>
+
+    public class CellReandererUtility
     {
-        private DataGridViewCellStyle _style;
-        public DataGridViewCellStyle Style { get => _style; set => _style = value; }
-        public Type ValueType { get; set; }
-        private object _value;
-        public object Value { get=> _value; set { _value = value; ValueType = value?.GetType(); } }
-        public string Text { get => _value?.ToString(); }
-        internal void SetControlWithStyle(DataGridViewColumn Column, CellRenderer cell) {
-            if (Column.DefaultCellStyle != null)
-                _style = Column.DefaultCellStyle;
-            if (_style != null)
+        internal void SetControlWithStyle(CellRenderer cell, DataGridViewCellStyle cellstyle)
+        {
+            if (cellstyle != null)
             {
-                if (_style.BackColor.Name != "0")
-                    cell.CellBackgroundRgba = new Gdk.RGBA() { Alpha = _style.BackColor.A / 255f, Blue = _style.BackColor.B / 255f, Green = _style.BackColor.G / 255f, Red = _style.BackColor.R / 255f };
-                if (_style.Alignment == DataGridViewContentAlignment.TopLeft)
+                if (cellstyle.BackColor.Name != "0")
+                    cell.CellBackgroundRgba = new Gdk.RGBA() { Alpha = cellstyle.BackColor.A / 255f, Blue = cellstyle.BackColor.B / 255f, Green = cellstyle.BackColor.G / 255f, Red = cellstyle.BackColor.R / 255f };
+                if (cellstyle.Alignment == DataGridViewContentAlignment.TopLeft)
                     cell.SetAlignment(0, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.TopCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.TopCenter)
                     cell.SetAlignment(0.5f, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.TopRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.TopRight)
                     cell.SetAlignment(1.0f, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleLeft)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleLeft)
                     cell.SetAlignment(0, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
                     cell.SetAlignment(0.5f, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleRight)
                     cell.SetAlignment(1.0f, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomLeft)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomLeft)
                     cell.SetAlignment(0, 1f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomCenter)
                     cell.SetAlignment(0.5f, 1f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomRight)
                     cell.SetAlignment(1.0f, 1f);
             }
         }
-        internal void SetTextWithStyle(DataGridViewColumn Column, CellRendererText cell)
+        internal void SetTextWithStyle(CellRendererText cell, DataGridViewCellStyle cellstyle, object value)
         {
-            if (Column.DefaultCellStyle != null)
-                _style = Column.DefaultCellStyle;
-            if (_style != null)
+            SetTextWithStyle(cell, cellstyle);
+            cell.Text = GetFormatText(value, cellstyle);
+        }
+        internal void SetTextWithStyle(CellRendererText cell, DataGridViewCellStyle cellstyle)
+        {
+            if (cellstyle != null)
             {
-                if (_style.ForeColor.Name != "0")
-                    cell.ForegroundRgba = new Gdk.RGBA() { Alpha = _style.ForeColor.A / 255f, Blue = _style.ForeColor.B / 255f, Green = _style.ForeColor.G / 255f, Red = _style.ForeColor.R / 255f };
-                if (_style.BackColor.Name != "0")
-                    cell.CellBackgroundRgba = new Gdk.RGBA() { Alpha = _style.BackColor.A / 255f, Blue = _style.BackColor.B / 255f, Green = _style.BackColor.G / 255f, Red = _style.BackColor.R / 255f };
-                if (_style.Alignment == DataGridViewContentAlignment.TopLeft)
+                if (cellstyle?.WrapMode == DataGridViewTriState.True)
+                {
+                    cell.WrapMode = Pango.WrapMode.WordChar;
+                    cell.WrapWidth = 0;
+                    cell.WidthChars = 0;
+                }
+                if (cellstyle.ForeColor.Name != "0")
+                    cell.ForegroundRgba = new Gdk.RGBA() { Alpha = cellstyle.ForeColor.A / 255f, Blue = cellstyle.ForeColor.B / 255f, Green = cellstyle.ForeColor.G / 255f, Red = cellstyle.ForeColor.R / 255f };
+                if (cellstyle.BackColor.Name != "0")
+                    cell.CellBackgroundRgba = new Gdk.RGBA() { Alpha = cellstyle.BackColor.A / 255f, Blue = cellstyle.BackColor.B / 255f, Green = cellstyle.BackColor.G / 255f, Red = cellstyle.BackColor.R / 255f };
+                if (cellstyle.Alignment == DataGridViewContentAlignment.TopLeft)
                     cell.SetAlignment(0, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.TopCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.TopCenter)
                     cell.SetAlignment(0.5f, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.TopRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.TopRight)
                     cell.SetAlignment(1.0f, 0);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleLeft)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleLeft)
                     cell.SetAlignment(0, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
                     cell.SetAlignment(0.5f, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.MiddleRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.MiddleRight)
                     cell.SetAlignment(1.0f, 0.5f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomLeft)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomLeft)
                     cell.SetAlignment(0, 1f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomCenter)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomCenter)
                     cell.SetAlignment(0.5f, 1f);
-                else if (_style.Alignment == DataGridViewContentAlignment.BottomRight)
+                else if (cellstyle.Alignment == DataGridViewContentAlignment.BottomRight)
                     cell.SetAlignment(1.0f, 1f);
 
-                if (_style.WrapMode != DataGridViewTriState.NotSet)
-                    cell.WrapMode = _style.WrapMode == DataGridViewTriState.True ? Pango.WrapMode.WordChar : Pango.WrapMode.Word;
+                if (cellstyle.WrapMode != DataGridViewTriState.NotSet)
+                    cell.WrapMode = cellstyle.WrapMode == DataGridViewTriState.True ? Pango.WrapMode.WordChar : Pango.WrapMode.Word;
             }
-            cell.Text = GetFormatText(_value);
         }
-        internal string GetFormatText(object text)
+        internal string GetFormatText(object text, DataGridViewCellStyle cellstyle)
         {
-            if (text == null && _style != null)
-                text = Convert.ToString(_style.NullValue) ?? string.Empty;
-            if (_style != null && string.IsNullOrWhiteSpace(_style.Format) == false)
-                return string.Format(_style.Format, text);
+            if (text == null && cellstyle != null)
+                text = Convert.ToString(cellstyle.NullValue) ?? string.Empty;
+            if (cellstyle != null && string.IsNullOrWhiteSpace(cellstyle.Format) == false)
+                return string.Format(cellstyle.Format, text);
             else
                 return text?.ToString();
         }
-        public int CompareTo(object obj)
-        {
-            if (obj is CellValue cell)
-                return CompareTo(cell);
-            else
-                return -1;
-        }
-
-        public int CompareTo([AllowNull] CellValue other)
-        {
-            if(other != null)
-            {
-                if (this._value == other.Value && this._style != null && other.Style != null)
-                    return this._style.GetHashCode().CompareTo(other.Style.GetHashCode());
-            }
-            return -1;
-        }
-
-        public bool Equals([AllowNull] CellValue other)
-        {
-            return CompareTo(other) == 0;
-        }
-
-        public override string ToString()
-        {
-            return _value?.ToString();
-        }
-
     }
-
 }

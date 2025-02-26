@@ -1,6 +1,5 @@
 
 using Gtk;
-using System.Reflection.PortableExecutable;
 using System.Runtime.Serialization;
 
 namespace System.Windows.Forms
@@ -8,15 +7,15 @@ namespace System.Windows.Forms
 	public sealed class ListViewGroup : ISerializable
 	{
         public readonly string SerialGuid = Guid.NewGuid().ToString();
-        public static readonly string defaultListViewGroupKey = "00000defaultListViewGroup";
+        public static readonly string defaultListViewGroupKey = "_DefaultListViewGroup_";
         ListView.ListViewItemCollection _items;
-
-        public static ListViewGroup GetDefaultListViewGroup() {
-            ListViewGroup defaultGroup = new ListViewGroup("default", HorizontalAlignment.Left);
-            defaultGroup.Header = "default";
-            defaultGroup.Name = ListViewGroup.defaultListViewGroupKey;
-            defaultGroup.Subtitle = "";
-            return defaultGroup;
+        internal Gtk.Box _groupbox { get; set; }
+        public static ListViewGroup CreateDefaultListViewGroup() {
+            ListViewGroup _defaultGroup = new ListViewGroup("default", HorizontalAlignment.Left);
+            _defaultGroup.Header = "default";
+            _defaultGroup.Name = ListViewGroup.defaultListViewGroupKey;
+            _defaultGroup.Subtitle = "";
+            return _defaultGroup;
         }
         public ListViewGroup() : this("", "")
         {

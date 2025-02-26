@@ -48,10 +48,10 @@ namespace System.Windows.Forms
                 string keytext = args.NewText.ToUpper();
                 if (char.IsNumber(args.NewText[0]))
                     keytext = "D" + keytext;
-                var keyv = Enum.GetValues<Keys>().Where(k=> {  
-                    return Enum.GetName(k) == keytext;
+                var keyv = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => {
+                    return Enum.GetName(typeof(Keys), k) == keytext;
                 });
-                foreach(var key in keyv) 
+                foreach (var key in keyv) 
                     KeyDown(this, new KeyEventArgs(key));
             }
         }
@@ -67,5 +67,22 @@ namespace System.Windows.Forms
         public virtual bool ReadOnly { get { return self.IsEditable == false; } set { self.IsEditable = value == false;  } }
         public override event EventHandler TextChanged;
         public bool Multiline { get; set; }
+        public int SelectionStart { get { self.GetSelectionBounds(out int start, out int end); return start; } }
+
+        [System.ComponentModel.Browsable(false)]
+        public virtual int SelectionLength
+        {
+            get { self.GetSelectionBounds(out int start, out int end); return end - start; }
+            set
+            {
+                self.SelectRegion(self.CursorPosition, self.CursorPosition + value);
+            }
+        }
+        public void InsertTextAtCursor(string text)
+        {
+            if(text == null) return;
+            int posi = self.CursorPosition;
+            self.InsertText(text,ref posi);
+        }
     }
 }

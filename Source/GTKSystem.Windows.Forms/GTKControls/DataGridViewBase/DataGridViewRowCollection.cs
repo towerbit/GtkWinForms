@@ -1,8 +1,12 @@
-﻿using Gtk;
+﻿/*
+ * 基于GTK组件开发，兼容原生C#控件winform界面的跨平台界面组件。
+ * 使用本组件GTKSystem.Windows.Forms代替Microsoft.WindowsDesktop.App.WindowsForms，一次编译，跨平台windows、linux、macos运行
+ * 技术支持438865652@qq.com，https://www.gtkapp.com, https://gitee.com/easywebfactory, https://github.com/easywebfactory
+ * author:chenhongjin
+ */
+using Gtk;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms.GtkRender;
 
 
 namespace System.Windows.Forms
@@ -15,23 +19,37 @@ namespace System.Windows.Forms
         public DataGridViewRowCollection(DataGridView dataGridView)
         {
             this.dataGridView = dataGridView;
-            this.dataGridView.Columns.Invalidate();
         }
-        private TreeIter AddGtkStore(List<CellValue> values)
+        private TreeIter AddGtkStore(DataGridViewCellCollection cells)
         {
-            int columnscount = this.dataGridView.Store.NColumns;
-            for (int i = values.Count; i < columnscount; i++)
-                values.Add(new CellValue());
-            TreeIter iter = this.dataGridView.Store.AppendValues(values.GetRange(0, columnscount).ToArray());
-            return iter;
+            int columnscount = dataGridView.Store.NColumns;
+            for (int i = cells.Count; i < columnscount; i++)
+                cells.Add(new DataGridViewTextBoxCell());
+            
+            for (int i = 0; i < columnscount; i++)
+            {
+                cells[i].ColumnIndex = i;
+            }
+            if (columnscount >= cells.Count)
+                return dataGridView.Store.AppendValues(cells.ConvertAll(o => o).ToArray());
+            else
+                return dataGridView.Store.AppendValues(cells.ConvertAll(o => o).Take(columnscount).ToArray());
         }
-        private TreeIter AddGtkStore(TreeIter parent, List<CellValue> values)
+        private TreeIter AddGtkStore(TreeIter parent, DataGridViewCellCollection cells)
         {
-            int columnscount = this.dataGridView.Store.NColumns;
-            for (int i = values.Count; i < columnscount; i++)
-                values.Add(new CellValue());
-            TreeIter iter = this.dataGridView.Store.AppendValues(parent, values.GetRange(0, columnscount).ToArray());
-            return iter;
+            int columnscount = dataGridView.Store.NColumns;
+            for (int i = cells.Count; i < columnscount; i++)
+            {
+                cells.Add(new DataGridViewTextBoxCell());
+            }
+            for (int i = 0; i < columnscount; i++)
+            {
+                cells[i].ColumnIndex = i;
+            }
+            if (columnscount >= cells.Count)
+                return dataGridView.Store.AppendValues(parent, cells.ConvertAll(o => o).ToArray());
+            else
+                return dataGridView.Store.AppendValues(parent, cells.ConvertAll(o => o).Take(columnscount).ToArray());
         }
         private void AddGtkStore(params DataGridViewRow[] dataGridViewRows)
         {
@@ -40,16 +58,21 @@ namespace System.Windows.Forms
             {
                 row.DataGridView = dataGridView;
                 row.Index = rowindex;
-                DataGridViewCellStyle _cellStyle = row.DefaultCellStyle;
+                DataGridViewCellStyle _cellStyle = dataGridView.DefaultCellStyle;
                 if (dataGridView.RowsDefaultCellStyle != null)
                     _cellStyle = dataGridView.RowsDefaultCellStyle;
                 if (rowindex % 2 != 0 && dataGridView.AlternatingRowsDefaultCellStyle != null)
                     _cellStyle = dataGridView.AlternatingRowsDefaultCellStyle;
+                if (row.DefaultCellStyle != null)
+                    _cellStyle = row.DefaultCellStyle;
 
-                row.TreeIter = AddGtkStore(row.Cells.ConvertAll(c =>
+                foreach (DataGridViewCell cell in row.Cells)
                 {
-                    return new CellValue() { Value = Convert.ToString(c.Value), Style = c.Style ?? _cellStyle };
-                }));
+                    cell.RowIndex = rowindex;
+                    cell.RowStyle = _cellStyle;
+                }
+                items.Add(row);
+                row.TreeIter = AddGtkStore(row.Cells);
                 rowindex++;
                 foreach (DataGridViewRow child in row.Children)
                 {
@@ -62,51 +85,65 @@ namespace System.Windows.Forms
         {
             row.Index = rowindex;
             row.DataGridView = dataGridView;
-            DataGridViewCellStyle _cellStyle = row.DefaultCellStyle;
+            DataGridViewCellStyle _cellStyle = dataGridView.DefaultCellStyle;
             if (dataGridView.RowsDefaultCellStyle != null)
                 _cellStyle = dataGridView.RowsDefaultCellStyle;
             if (rowindex % 2 != 0 && dataGridView.AlternatingRowsDefaultCellStyle != null)
                 _cellStyle = dataGridView.AlternatingRowsDefaultCellStyle;
+            if (row.DefaultCellStyle != null)
+                _cellStyle = row.DefaultCellStyle;
 
-            row.TreeIter = AddGtkStore(parent, row.Cells.ConvertAll(c =>
-            {
-                return new CellValue() { Value = Convert.ToString(c.Value), Style = c.Style ?? _cellStyle };
-            }));
+            foreach (DataGridViewCell cell in row.Cells)
+                cell.RowStyle = _cellStyle;
+            row.TreeIter = AddGtkStore(row.Cells);
+
             rowindex++;
             foreach (DataGridViewRow child in row.Children)
             {
                 items.Add(child);
                 AddGtkStore(row.TreeIter, ref rowindex, child);
             }
-
         }
-        private TreeIter InsertGtkStore(int rowIndex, List<CellValue> values)
+        private TreeIter InsertGtkStore(int rowIndex, DataGridViewCellCollection cells)
         {
-            int columnscount = this.dataGridView.Store.NColumns;
-            for (int i = values.Count; i < columnscount; i++)
-                values.Add(new CellValue());
-            TreeIter iter = this.dataGridView.Store.InsertWithValues(rowIndex, values.GetRange(0, columnscount).ToArray());
-            return iter;
+            int columnscount = dataGridView.Store.NColumns;
+            for (int i = cells.Count; i < columnscount; i++)
+                cells.Add(new DataGridViewTextBoxCell());
+            for (int i = 0; i < columnscount; i++)
+            {
+                cells[i].ColumnIndex = i;
+            }
+            if (columnscount >= cells.Count)
+                return dataGridView.Store.InsertWithValues(rowIndex, cells.ConvertAll(o => o).ToArray());
+            else
+                return dataGridView.Store.InsertWithValues(rowIndex, cells.ConvertAll(o => o).Take(columnscount).ToArray());
         }
         private void InsertGtkStore(int rowIndex, params DataGridViewRow[] dataGridViewRows)
         {
             int idx = rowIndex;
             foreach (DataGridViewRow row in dataGridViewRows)
             {
-                int rowindex = GetRowCount(DataGridViewElementStates.None);
-                DataGridViewCellStyle _cellStyle = row.DefaultCellStyle;
+                DataGridViewCellStyle _cellStyle = dataGridView.DefaultCellStyle;
                 if (dataGridView.RowsDefaultCellStyle != null)
                     _cellStyle = dataGridView.RowsDefaultCellStyle;
-                if (rowindex % 2 != 0 && dataGridView.AlternatingRowsDefaultCellStyle != null)
+                if (idx % 2 != 0 && dataGridView.AlternatingRowsDefaultCellStyle != null)
                     _cellStyle = dataGridView.AlternatingRowsDefaultCellStyle;
+                if (row.DefaultCellStyle != null)
+                    _cellStyle = row.DefaultCellStyle;
 
-                row.TreeIter = InsertGtkStore(idx, row.Cells.ConvertAll(c =>
+                foreach (DataGridViewCell cell in row.Cells)
                 {
-                    return new CellValue() { Value = Convert.ToString(c.Value), Style = c.Style ?? _cellStyle };
-                }));
+                    cell.RowIndex = idx;
+                    cell.RowStyle = _cellStyle;
+                }
+
+                items.Insert(idx, row);
+                row.TreeIter = InsertGtkStore(idx, row.Cells);
                 idx++;
             }
         }
+
+
         public DataGridViewRow this[int index]
         {
             get
@@ -118,12 +155,11 @@ namespace System.Windows.Forms
         protected DataGridView DataGridView { get { return dataGridView; } }
         internal ArrayList SharedList => items;
         protected ArrayList List { get { return items; } }
-
+        public int Count => items.Count;
         bool IList.IsFixedSize => false;
 
         bool IList.IsReadOnly => false;
 
-        int ICollection.Count => items.Count;
 
         bool ICollection.IsSynchronized => false;
 
@@ -138,44 +174,41 @@ namespace System.Windows.Forms
         {
             DataGridViewRow row = new DataGridViewRow() { Index = items.Count };
             AddGtkStore(row);
-            items.Add(row);
             return 1;
         }
         public virtual int Add(DataGridViewRow dataGridViewRow)
         {
-            if (this.dataGridView.Store.NColumns < this.dataGridView.GridView.Columns.Length)
-                this.dataGridView.Columns.Invalidate();
-
             AddGtkStore(dataGridViewRow);
-            return items.Add(dataGridViewRow);
+            return items.Count - 1;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual int Add(params object[] values)
         {
-            DataGridViewRow row = new DataGridViewRow();
-            row.Index = items.Count;
-            foreach (object o in values)
+            DataGridViewRow newRow = new DataGridViewRow();
+            newRow.Index = items.Count;
+            var cols = dataGridView.Columns;
+            for (int i = 0; i < cols.Count; i++)
             {
-                row.Cells.Add(new DataGridViewTextBoxCell() { Value = o });
+                if (i < values.Length)
+                    newRow.Cells.Add((DataGridViewCell)values[i]);
+                else
+                    newRow.Cells.Add(new DataGridViewTextBoxCell());
             }
-            AddGtkStore(row);
-            return items.Add(row);
+            return Add(newRow);
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual int Add(int count)
         {
-            if (this.dataGridView.Store.NColumns < this.dataGridView.GridView.Columns.Length)
-                this.dataGridView.Columns.Invalidate();
-
+            int start = items.Count;
             for (int i = 0; i < count; i++)
             {
-                DataGridViewRow row = new DataGridViewRow() { Index = items.Count };
+                DataGridViewRow row = new DataGridViewRow() { Index = start + i };
                 AddGtkStore(row);
                 items.Add(row);
             }
 
-            return count;
+            return start + count;
         }
         public virtual int AddCopies(int indexSource, int count)
         {
@@ -195,7 +228,6 @@ namespace System.Windows.Forms
                 this.dataGridView.Columns.Invalidate();
 
             AddGtkStore(dataGridViewRows);
-            items.AddRange(dataGridViewRows);
         }
         public virtual void Clear()
         {
@@ -349,23 +381,39 @@ namespace System.Windows.Forms
         public virtual void Insert(int rowIndex, params object[] values)
         {
             DataGridViewRow row = new DataGridViewRow();
-            foreach (object o in values)
-                row.Cells.Add(new DataGridViewTextBoxCell() { Value = o });
+            int Ncolumn=dataGridView.Columns.Count;
+            for (int i = 0;i < Ncolumn; i++)
+            {
+                if (values.Length > i)
+                {
+                    var cell = dataGridView.Columns[i].CellTemplate;
+                    cell.Value = values[i];
+                    row.Cells.Add(cell);
+                }
+                else
+                {
+                    row.Cells.Add(new DataGridViewTextBoxCell() { Value = values[i] });
+                }
+            }
+
             InsertGtkStore(rowIndex, row);
-            items.Insert(rowIndex, row);
         }
         public virtual void Insert(int rowIndex, DataGridViewRow dataGridViewRow)
         {
             InsertGtkStore(rowIndex, dataGridViewRow);
-            items.Insert(rowIndex, dataGridViewRow);
         }
 
         public virtual void Insert(int rowIndex, int count) {
-            DataGridViewRow row = new DataGridViewRow();
-            for (int i=0;i < DataGridView.Columns.Count;i++)
-                row.Cells.Add(new DataGridViewTextBoxCell());
-            InsertGtkStore(rowIndex, row);
-            items.Insert(rowIndex, row);
+            DataGridViewRow[] rows = new DataGridViewRow[count];
+            for (int r = 0; r < count; r++)
+            {
+                foreach (var col in dataGridView.Columns)
+                {
+                    var cell = col.CellTemplate;
+                    rows[r].Cells.Add(cell);
+                }
+            }
+            InsertRange(rowIndex, rows);
         }
 
         public virtual void InsertCopies(int indexSource, int indexDestination, int count) { }
@@ -373,12 +421,6 @@ namespace System.Windows.Forms
         public virtual void InsertCopy(int indexSource, int indexDestination) { }
         public virtual void InsertRange(int rowIndex, params DataGridViewRow[] dataGridViewRows)
         {
-            int i = rowIndex;
-            foreach (DataGridViewRow row in dataGridViewRows)
-            {
-                items.Insert(i, row);
-                i++;
-            }
             InsertGtkStore(rowIndex, dataGridViewRows);
         }
         public virtual void Remove(DataGridViewRow dataGridViewRow) {

@@ -1,5 +1,27 @@
 
 ## 更新日志
+
+ #### 2025/2/9 V1.3.24.60
+	1. 更新ListView\TabControl，优化功能，修正ListView滚动条bug
+	2. 修正容器排版精度、机制
+	3. 增加支持netstandard2.0
+
+ #### 2025/2/5 V1.3.24.59
+	1. 更新ToolStripButton的默认显示类型
+	2. 更新ToolStrip，支持最后一个菜单项右边靠
+	3. ListView更新很大，实现方法增加、优化界面
+	4. 更新Form，修正bug
+ #### 2025/1/2 V1.3.24.58
+	1. 更新容器控件排版功能。
+	2. 更新datagridview数据赋值功能。
+	3. 更新窗体close关闭功能。
+ #### 2024/12/20 V1.3.24.57
+	1. 更新listview、listbox、checkedlistbox、datagridview功能。
+ #### 2024/12/14 V1.3.24.56
+	1. 实现控件SizeChange事件。
+	2. 更新消息框内容换行、datagridview自动换行
+	3. 更新listview增删功能
+	4. 修正了一些发现的问题
  #### 2024/11/7 V1.3.24.53
 	1. 容器控件功能修正。
 	2. 完善treeview功能

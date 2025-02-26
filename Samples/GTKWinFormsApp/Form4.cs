@@ -22,7 +22,15 @@ namespace GTKWinFormsApp
 
             button5.Text = "Font Dialog";
             button5.Click += button5_Click;
+
+            button4.Click += Button4_Click;
         }
+
+        private void Button4_Click(object? sender, EventArgs e)
+        {
+            splitContainer1.Panel1.Controls.Add(new Button() { Location = new Point(200, 100), Size = new Size(160, 30), Text = "testtest", Dock=DockStyle.Fill });
+        }
+
         Point panel1Location = new Point();
         private void Form4_Shown(object? sender, EventArgs e)
         {
