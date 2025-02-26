@@ -7,6 +7,8 @@ using System.Runtime.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using GLib;
+using System.Collections.Generic;
+using Gtk;
 
 namespace System.Windows.Forms
 {
@@ -18,6 +20,7 @@ namespace System.Windows.Forms
         internal Gtk.TreeIter TreeIter = Gtk.TreeIter.Zero;
         private TreeNode parent;
         internal TreeView treeView;
+
         internal TreeView TreeView
         {
             get
@@ -50,6 +53,12 @@ namespace System.Windows.Forms
             this.parent = node;
             this.treeView = node.TreeView;
         }
+        public TreeNode(string text, int pImageIndex, int pSelectedImageIndex) : this(text)
+        {
+            ImageIndex = pImageIndex;
+            SelectedImageIndex = pSelectedImageIndex;
+        }
+
         public TreeNodeCollection Nodes
         {
             get
@@ -63,9 +72,14 @@ namespace System.Windows.Forms
             get { return parent; }
             internal set { parent = value; }
         }
+        private string _text;
         public string Text
         {
-            get;set;
+            get=>_text;
+            set {
+                _text = value;
+                TreeView?.NativeNodeText(this, value);
+            }
         }
 
 
@@ -81,14 +95,35 @@ namespace System.Windows.Forms
         private bool _IsChecked;
         public bool Checked
         {
-            get => _IsChecked; set { _IsChecked = value; TreeView?.SetChecked(this, value); }
+            get => _IsChecked; set { _IsChecked = value; TreeView?.NativeNodeChecked(this, value); }
         }
 
-        public string FullPath { get; set; }
+        public string FullPath
+        {
+            get
+            {
+                List<string> paths=new List<string>();
+                GetFullPath(this, paths);
+                return string.Join("/", paths);
+            }
+            set { }
+        }
+        protected void GetFullPath(TreeNode node, List<string> paths)
+        {
+            paths.Add(node.Text);
+            if (node.Parent != null && node.Parent.index != "-1")
+            {
+                GetFullPath(node.Parent, paths);
+            }
+        }
         private bool _IsSelected;
         public bool IsSelected
         {
-            get=> _IsSelected; set { _IsSelected = value; TreeView?.SetSelected(this, value); }
+            get=> _IsSelected; 
+            set { 
+                _IsSelected = value; 
+                TreeView?.NativeNodeSelected(this, value); 
+            }
         }
         public bool IsExpanded
         {
@@ -110,12 +145,22 @@ namespace System.Windows.Forms
                     return parent.Level + 1;
             }
         }
-        public int ImageIndex { get; set; }
-        public string ImageKey { get; set; }
+        private int _imageIndex;
+        public int ImageIndex { 
+            get=>_imageIndex; 
+            set { _imageIndex = value; TreeView?.NativeNodeImage(this, value); }
+        }
+        private string _imageKey;
+        public string ImageKey { 
+            get => _imageKey; 
+            set { _imageKey = value; TreeView?.NativeNodeImage(this, value); }
+        }
         public int SelectedImageIndex { get; set; }
         public string SelectedImageKey { get; set; }
         public int StateImageIndex { get; set; }
         public string StateImageKey { get; set; }
+        public object Tag { get; set; }
+
         public void Expand(){
             TreeView?.SetExpandNode(this, false);
         }
@@ -126,6 +171,10 @@ namespace System.Windows.Forms
         public void Collapse()
         {
             TreeView?.SetCollapseNode(this);
+        }
+        public void Remove()
+        {
+            TreeView?.RemoveNode(this);
         }
         public object Clone()
         {

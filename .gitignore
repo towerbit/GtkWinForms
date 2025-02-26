@@ -80,3 +80,6 @@ $RECYCLE.BIN/
 /Source/GTKSystem.Windows.Forms/obj/project.assets.json
 /Source/GTKSystem.Windows.Forms/obj/project.nuget.cache
 /.vs/GTKWinFormsApp/DesignTimeBuild/.dtbcache.v2
+/Samples/GtkForm
+/Samples/GTKWinFormsApp/bin/Debug/net6.0
+/Samples/GTKWinFormsApp/obj/Debug/net6.0

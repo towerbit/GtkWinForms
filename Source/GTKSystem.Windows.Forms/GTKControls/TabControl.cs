@@ -32,6 +32,14 @@ namespace System.Windows.Forms
             if (SelectedIndexChanged != null && self.IsMapped)
                 SelectedIndexChanged(this, new EventArgs());
         }
+
+        /// <summary>
+        /// gtk特有的菜单功能，供有需要的使用
+        /// </summary>
+        [Browsable(false)]
+        public bool EnablePopup { 
+            set { self.EnablePopup = true; self.PopupEnable(); } 
+        }
         public TabAlignment Alignment {
             get
             {
@@ -86,13 +94,22 @@ namespace System.Windows.Forms
 
         public event DrawItemEventHandler DrawItem;
 
-        public class ControlCollection : List<TabPage>
+        public new class ControlCollection : List<TabPage>
         {
             TabControl _owner;
             public ControlCollection(TabControl owner)
             {
                 _owner = owner;
+                _owner.self.Shown += Self_Shown;
             }
+
+            private void Self_Shown(object sender, EventArgs e)
+            {
+                foreach(TabPage item in this) {
+                    _owner.self.SetMenuLabelText(item.self, _owner.self.GetTabLabelText(item.self));
+                }
+            }
+
             public new int Add(TabPage item)
             {
                 try
@@ -125,9 +142,15 @@ namespace System.Windows.Forms
                     };
                     return _owner.self.AppendPage(item.self, item.TabLabel);
                 }
+                catch
+                {
+                    throw;
+                }
                 finally
                 {
                     _owner.self.SetTabReorderable(item.self, true);
+                    if (_owner.Widget.IsRealized)
+                        item.Widget.ShowAll();
                 }
             }
             public new void RemoveAt(int index)

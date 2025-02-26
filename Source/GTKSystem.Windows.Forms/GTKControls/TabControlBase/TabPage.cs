@@ -34,12 +34,10 @@ namespace System.Windows.Forms
         {
             get
             {
-                return new Point(self.MarginStart, self.MarginTop);
+                return new Point(0, 0);
             }
             set
             {
-                self.MarginStart = 0;
-                self.MarginTop = 0;
             }
         }
         public new DockStyle Dock
@@ -58,5 +56,19 @@ namespace System.Windows.Forms
         public int ImageIndex { get; set; }
         public string ImageKey { get; set; }
         public List<object> ImageList { get; set; }
+        public override Padding Padding
+        {
+            get => base.Padding;
+            set
+            {
+                base.Padding = value;
+                self.Content.MarginStart = value.Left;
+                self.Content.MarginTop = value.Top;
+                self.Content.MarginEnd = value.Right;
+                self.Content.MarginBottom = value.Bottom;
+            }
+        }
+        private Size _size;
+        public override Size Size { get => _size; set { _size = value; } }
     }
 }
