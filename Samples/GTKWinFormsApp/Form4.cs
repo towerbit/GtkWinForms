@@ -14,9 +14,20 @@ namespace GTKWinFormsApp
             // GotFocus 事件不会触发
             this.GotFocus += (_, _) => throw new InvalidOperationException();
             this.Shown += Form4_Shown;
-
+            this.Paint += (s, e) =>
+            {
+                Debug.Print("=> this.Paint 晚于 OnPaint()");
+                //e.Graphics.Clear(Color.Blue);
+            };
             button5.Text = "Font Dialog";
             button5.Click += button5_Click;
+
+            button5.MouseDown += (s, e) =>
+            {
+                var msg = e.Button == MouseButtons.Left ? "left" : "right";
+                MessageBox.Show(msg);
+            };
+
             button2.Text = "Close";
             button2.Click += (_, _) => this.Close();
 
@@ -45,6 +56,13 @@ namespace GTKWinFormsApp
                 Name = "tabPage4",
                 Text = "tabPage4"
             });
+
+            button4.Click += Button4_Click;
+        }
+
+        private void Button4_Click(object? sender, EventArgs e)
+        {
+            splitContainer1.Panel1.Controls.Add(new Button() { Location = new Point(200, 100), Size = new Size(160, 30), Text = "testtest", Dock=DockStyle.Fill });
         }
 
         Point panel1Location = new Point();
@@ -159,6 +177,13 @@ namespace GTKWinFormsApp
             Debug.Print("==> OnMouseDown");
         }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            Debug.Print("==> OnPaint 先于 Paint Event");
+            //e.Graphics.Clear(Color.Pink);
+        }
+
         #endregion
 
         private void button3_Click(object sender, EventArgs e)
@@ -204,17 +229,17 @@ namespace GTKWinFormsApp
             FolderBrowserDialog ofd = new FolderBrowserDialog();
             ofd.Title = "测试浏览文件夹";
             ofd.Description = "浏览文件夹 decription";
-            ofd.Multiselect = true;
+            //ofd.Multiselect = true;
             DialogResult dialogResult = ofd.ShowDialog();
             Console.WriteLine("dialogResult:" + dialogResult.ToString());
-            foreach (string file in ofd.SelectedPaths)
-            {
-                Console.WriteLine("SelectedPaths:" + file);
-            }
             Console.WriteLine("SelectedPath:" + ofd.SelectedPath);
+            //foreach (string file in ofd.SelectedPaths)
+            //{
+            //    Console.WriteLine("SelectedPaths:" + file);
+            //}
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void button8_Click(object? sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
             colorDialog.ShowDialog();
@@ -236,7 +261,7 @@ namespace GTKWinFormsApp
         }
 
         private bool isBringToFront = false;
-        private void button5_Click(object sender, EventArgs e)
+        private void button5_Click(object? sender, EventArgs e)
         {
             Debug.Print(Control.ModifierKeys.ToString());
 

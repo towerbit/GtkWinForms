@@ -281,15 +281,17 @@ namespace GTKWinFormsApp
             // 
             // button5
             // 
+            button5.BackColor = System.Drawing.SystemColors.ActiveCaption;
             button5.ContextMenuStrip = contextMenuStrip1;
             button5.Dock = DockStyle.Top;
+            //button5.FlatStyle = FlatStyle.Flat;
             button5.Location = new System.Drawing.Point(0, 0);
             button5.Margin = new Padding(2, 3, 2, 3);
             button5.Name = "button5";
             button5.Size = new System.Drawing.Size(573, 42);
             button5.TabIndex = 2;
             button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
+            button5.UseVisualStyleBackColor = false;
             // 
             // contextMenuStrip1
             // 
@@ -364,7 +366,7 @@ namespace GTKWinFormsApp
             // label1
             // 
             label1.Dock = DockStyle.Top;
-            label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F);
+            label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             label1.Location = new System.Drawing.Point(0, 0);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";

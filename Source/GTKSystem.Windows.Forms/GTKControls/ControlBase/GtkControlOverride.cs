@@ -104,6 +104,9 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
             }
             if (Paint != null)
                 Paint(this.container, new PaintEventArgs(new Graphics(container, cr, area), new Rectangle(area.X, area.Y, area.Width, area.Height)));
+            //var e = new PaintEventArgs(new Graphics(container, cr, area), new Rectangle(area.X, area.Y, area.Width, area.Height));
+            //OnPaint(e);
         }
+        //public void OnPaint(PaintEventArgs e)=> Paint?.Invoke(this.container, e);
     }
 }

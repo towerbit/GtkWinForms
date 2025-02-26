@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,7 +136,8 @@ namespace GTKWinFormsApp
         private void button2_Click(object sender, EventArgs e)
         {
             Form4 f = new Form4();
-            f.ShowDialog();
+            DialogResult res = f.ShowDialog();
+            Console.WriteLine(res);
         }
 
         private void panel5_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
@@ -145,33 +147,7 @@ namespace GTKWinFormsApp
 
         private void button3_Click(object sender, EventArgs e)
         {
-
-            //using (Graphics g = CreateGraphics())
-            //{
-            //    g.DrawString(DateTime.Now.ToString(), new Font(FontFamily.GenericSansSerif, 16), new SolidBrush(Color.Red), 200, 200);
-            //    g.DrawRectangle(new Pen((Color)Color.Red, 5), new Rectangle(110, 110, 200, 200));
-            //    // g.Dispose();
-            //    this.Refresh();
-            //}
-
-
-            Image m = new Bitmap(200, 200);
-            using (Graphics gg = Graphics.FromImage(m))
-            {
-                //gg.Clear(Color.White);
-                gg.DrawString(DateTime.Now.ToString(), new Font(FontFamily.GenericSansSerif, 16), new SolidBrush(Color.Red), 20, 120);
-                gg.DrawRectangle(new Pen((Color)Color.Red, 5), new Rectangle(10, 10, 100, 100));
-                gg.Flush();
-            }
-            PictureBox pic = new PictureBox();
-            pic.Location = new Point(20, 50);
-            pic.Width = 300;
-            pic.Height = 200;
-            pic.Image = m;
-            //pic.Dock = DockStyle.Right;
-            pic.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            panel1.Controls.Add(pic);
-            panel1.Show();
+            //打印
         }
 
         private void button4_Click(object sender, EventArgs e)

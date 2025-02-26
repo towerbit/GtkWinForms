@@ -40,7 +40,63 @@ namespace System.Windows.Forms
         }
         public override event EventHandler Click;
         public override string Text { get { return string.IsNullOrEmpty(self.Label)? self.Uri : self.Label; } set { self.Label = value; self.Uri = value; } }
-         
+        public override RightToLeft RightToLeft { get { return self.Direction == Gtk.TextDirection.Rtl ? RightToLeft.Yes : RightToLeft.No; } set { self.Direction = value == RightToLeft.Yes ? Gtk.TextDirection.Rtl : Gtk.TextDirection.Ltr; } }
+        private System.Drawing.ContentAlignment textAlign;
+        public System.Drawing.ContentAlignment TextAlign
+        {
+            get { return textAlign; }
+            set
+            {
+                textAlign = value;
+                if (value == System.Drawing.ContentAlignment.TopLeft)
+                {
+                    self.Xalign = 0.0f;
+                    self.Yalign = 0.0f;
+                }
+                else if (value == System.Drawing.ContentAlignment.TopCenter)
+                {
+                    self.Xalign = 0.5f;
+                    self.Yalign = 0.0f;
+                }
+                else if (value == System.Drawing.ContentAlignment.TopRight)
+                {
+                    self.Xalign = 1.0f;
+                    self.Yalign = 0.0f;
+                }
+                else if (value == System.Drawing.ContentAlignment.MiddleLeft)
+                {
+                    self.Xalign = 0.0f;
+                    self.Yalign = 0.5f;
+                }
+                else if (value == System.Drawing.ContentAlignment.MiddleCenter)
+                {
+                    self.Xalign = 0.5f;
+                    self.Yalign = 0.5f;
+                }
+                else if (value == System.Drawing.ContentAlignment.MiddleRight)
+                {
+                    self.Xalign = 1.0f;
+                    self.Yalign = 0.5f;
+                }
+                else if (value == System.Drawing.ContentAlignment.BottomLeft)
+                {
+                    self.Xalign = 0.0f;
+                    self.Yalign = 1.0f;
+                }
+                else if (value == System.Drawing.ContentAlignment.BottomCenter)
+                {
+                    self.Xalign = 0.5f;
+                    self.Yalign = 1.0f;
+                }
+                else if (value == System.Drawing.ContentAlignment.BottomRight)
+                {
+                    self.Xalign = 1.0f;
+                    self.Yalign = 1.0f;
+                }
+
+            }
+        }
+
 
         public event LinkLabelLinkClickedEventHandler LinkClicked;
 

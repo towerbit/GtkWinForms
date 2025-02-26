@@ -3,9 +3,6 @@
   <ImportGroup Condition=" '$(TargetFramework)' == 'net6.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets" Condition="Exists('$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets')" />
   </ImportGroup>
-  <ImportGroup Condition=" '$(TargetFramework)' == 'net7.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets" Condition="Exists('$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets')" />
-  </ImportGroup>
   <ImportGroup Condition=" '$(TargetFramework)' == 'net8.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets" Condition="Exists('$(NuGetPackageRoot)gtksharp\3.24.24.95\build\GtkSharp.targets')" />
   </ImportGroup>

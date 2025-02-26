@@ -23,6 +23,7 @@ namespace System.Windows.Forms
         {
             self.TextView.Buffer.Changed += Buffer_Changed;
             this.BorderStyle = BorderStyle.Fixed3D;
+            self.TextView.Buffer.Text = string.Empty;
         }
         private void Buffer_Changed(object sender, EventArgs e)
         {
@@ -32,7 +33,7 @@ namespace System.Windows.Forms
             }
         }
 
-        public override string Text { get => self.TextView.Buffer.Text; set => self.TextView.Buffer.Text = value; }
+        public override string Text { get => self.TextView.Buffer.Text; set => self.TextView.Buffer.Text = value??string.Empty; }
         public virtual bool ReadOnly { get { return self.TextView.CanFocus; } set { self.TextView.CanFocus = value; } }
 
         public override event EventHandler TextChanged;
@@ -46,5 +47,26 @@ namespace System.Windows.Forms
         {
             get { return self.TextView.Buffer.Text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None); }
         }
+        public int SelectionStart { get { if (self.TextView.Buffer.HasSelection) { self.TextView.Buffer.GetSelectionBounds(out TextIter start, out TextIter end); return start.Offset; } else { return self.TextView.Buffer.CursorPosition; } } }
+        
+        [System.ComponentModel.Browsable(false)]
+        public virtual int SelectionLength
+        {
+            get { self.TextView.Buffer.GetSelectionBounds(out TextIter start, out TextIter end); return end.Offset - start.Offset; }
+            set
+            {
+                
+                TextIter start = self.TextView.Buffer.GetIterAtOffset(self.TextView.Buffer.CursorPosition);
+                TextIter end = self.TextView.Buffer.GetIterAtOffset(self.TextView.Buffer.CursorPosition + value);
+                self.TextView.Buffer.SelectRange(start, end);
+            }
+        }
+        public void InsertTextAtCursor(string text)
+        {
+            if (text == null) return;
+            self.TextView.Buffer.InsertAtCursor(text);
+        }
+
+        public void Clear() => this.Text = string.Empty;
     }
 }

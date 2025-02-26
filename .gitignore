@@ -84,3 +84,8 @@ $RECYCLE.BIN/
 /Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/img10.jpg
 /Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/img11.jpg
 /Samples/GTKWinFormsApp/bin/Debug/net8.0/Resources/timg2.jpg
+/Samples/GtkForm/bin
+/Samples/GtkForm/Dependency
+/Samples/GtkForm/obj
+/Samples/GTKWinFormsApp/bin/Debug/net6.0
+/Samples/GTKWinFormsApp/obj/Debug/net6.0

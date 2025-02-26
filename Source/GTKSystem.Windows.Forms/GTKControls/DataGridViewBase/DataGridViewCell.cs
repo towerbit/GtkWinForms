@@ -24,11 +24,10 @@ namespace System.Windows.Forms
         public DataGridViewCellStyle Style { get; set; }
 
         public Size Size { get; }
-
+        private bool _Selected;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public virtual bool Selected { get; set; }
-
-        public int RowIndex { get; }
+        public virtual bool Selected { get => _Selected; set { _Selected = value; DataGridView?.GridView.QueueDraw(); } }
+        public int RowIndex { get; internal set; }
 
         public virtual bool Resizable { get; }
 
@@ -44,11 +43,11 @@ namespace System.Windows.Forms
         public DataGridViewColumn OwningColumn { get; }
 
         public bool IsInEditMode { get; }
-
-        public DataGridViewCellStyle InheritedStyle { get; }
+        internal DataGridViewCellStyle RowStyle { get; set; }
+        public DataGridViewCellStyle InheritedStyle { get => RowStyle; }
 
         public AccessibleObject AccessibilityObject { get; }
-        public int ColumnIndex { get; }
+        public int ColumnIndex { get; internal set; }
 
         public Rectangle ContentBounds { get; }
         [DefaultValue(null)]
@@ -80,8 +79,9 @@ namespace System.Windows.Forms
         public bool HasStyle { get; }
 
         public DataGridViewElementStates InheritedState { get; }
-
-        public virtual Type ValueType { get; set; }
+        private Type _valueType;
+        public virtual Type ValueType { get { return _valueType == null ? Value?.GetType() : _valueType; } set { _valueType = value; } }
+        
     }
     public class DataGridViewTextBoxCell : DataGridViewCell
     {
@@ -90,6 +90,9 @@ namespace System.Windows.Forms
         //}
     }
     public class DataGridViewCheckBoxCell : DataGridViewCell
+    {
+    }
+    public class DataGridViewRadioCell : DataGridViewCell
     {
     }
     public class DataGridViewComboBoxCell : DataGridViewCell

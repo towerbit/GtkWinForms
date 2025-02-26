@@ -8,12 +8,11 @@ using GLib;
 using Gtk;
 using GTKSystem.Windows.Forms.GTKControls.ControlBase;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Linq;
+using System.Drawing;
+using System.Net.Sockets;
 using System.Reflection;
-using System.Windows.Forms.GtkRender;
 
 namespace System.Windows.Forms
 {
@@ -25,8 +24,8 @@ namespace System.Windows.Forms
         private DataGridViewColumnCollection _columns;
         private DataGridViewRowCollection _rows;
         private ControlBindingsCollection _collect;
-        internal Gtk.TreeStore Store = new TreeStore(typeof(CellValue));
-        internal Gtk.TreeView GridView { get { return self.GridView; } }
+        internal Gtk.TreeStore Store = new TreeStore(typeof(DataGridViewCell));
+        public Gtk.TreeView GridView { get { return self.GridView; } }
         public DataGridView():base()
         {
             this.BorderStyle = BorderStyle.FixedSingle;
@@ -45,10 +44,10 @@ namespace System.Windows.Forms
             GridView.RowActivated += GridView_RowActivated;
             GridView.Selection.Changed += Selection_Changed;
         }
+
         private List<int> _selectedBandIndexes = new List<int>();
         private void Selection_Changed(object sender, EventArgs e)
         {
-            SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             _selectedBandIndexes.Clear();
             TreePath[] treePaths = GridView.Selection.GetSelectedRows();
             foreach (TreePath path in treePaths)
@@ -66,13 +65,14 @@ namespace System.Windows.Forms
             if (CellClick != null)
             {
                 DataGridViewColumn column = args.Column as DataGridViewColumn;
-                CellClick(this, new DataGridViewCellEventArgs(column.Index, args.Path.Indices[0]));
+                CellClick(this, new DataGridViewCellEventArgs(column.Index, args.Path.Indices.Last()));
             }
         }
 
         private void GridView_Realized(object sender, EventArgs e)
         {
             OnSetDataSource();
+            _columns.Invalidate();
             foreach (Binding binding in DataBindings)
                 GridView.AddNotification(binding.PropertyName, propertyNotity);
         }
@@ -83,14 +83,8 @@ namespace System.Windows.Forms
         }
         public event EventHandler SelectionChanged;
         public event DataGridViewCellEventHandler CellClick;
-        internal void CellValueChanagedHandler(int column, int row, CellValue val)
+        internal void CellValueChanagedHandler(int column, int row)
         {
-            var cells = _rows[row].Cells;
-            if (cells.Count > column)
-            {
-                cells[column].Value = val?.Text;
-            }
-
             if (CellValueChanged != null)
             {
                 CellValueChanged(this, new DataGridViewCellEventArgs(column, row));
@@ -105,13 +99,59 @@ namespace System.Windows.Forms
         {
             GridView.CollapseRow(Store.GetPath(row.TreeIter));
         }
-        public bool MultiSelect { get => !GridView.ActivateOnSingleClick; set { GridView.ActivateOnSingleClick = !value; } }
-        public DataGridViewSelectionMode SelectionMode { get; set; }
+        private bool _MultiSelect = true;
+        public bool MultiSelect { 
+            get => _MultiSelect; 
+            set {
+                _MultiSelect = value;
+                GridView.ActivateOnSingleClick = !_MultiSelect;
+                if (_SelectionMode == DataGridViewSelectionMode.CellSelect)
+                {
+                    GridView.Selection.Mode = Gtk.SelectionMode.None;
+                }
+                else
+                {
+                    if (_MultiSelect == true)
+                        GridView.Selection.Mode = Gtk.SelectionMode.Multiple;
+                    else
+                        GridView.Selection.Mode = Gtk.SelectionMode.Single;
+                }
+            } 
+        }
+
+        private DataGridViewSelectionMode _SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
+        public DataGridViewSelectionMode SelectionMode {
+            get => _SelectionMode;
+            set {
+                _SelectionMode = value;
+                switch (_SelectionMode)
+                {
+                    case DataGridViewSelectionMode.CellSelect:
+                        {
+                            GridView.Selection.Mode = Gtk.SelectionMode.None;
+                            break;
+                        }
+
+                    case DataGridViewSelectionMode.FullColumnSelect:
+                    case DataGridViewSelectionMode.ColumnHeaderSelect:
+                        {
+                            GridView.Selection.Mode = Gtk.SelectionMode.Multiple;
+                            break;
+                        }
+
+                    case DataGridViewSelectionMode.FullRowSelect:
+                    case DataGridViewSelectionMode.RowHeaderSelect:
+                        {
+                            GridView.Selection.Mode = Gtk.SelectionMode.Multiple;
+                            break;
+                        }
+                }
+                
+            } }
         public string Markup { get; set; } = "...";
         public bool ReadOnly { get; set; }
         public int RowHeadersWidth { get; set; }
         public int ColumnHeadersHeight { get; set; }
-
         public DataGridViewColumnHeadersHeightSizeMode ColumnHeadersHeightSizeMode
         {
             get;set;
@@ -145,14 +185,19 @@ namespace System.Windows.Forms
         private void OnSetDataSource()
         {
             _Created = false;
-            Store.Clear();
+            _rows.Clear();
             if (_DataSource != null)
             {
-                Store = new Gtk.TreeStore(Array.ConvertAll(GridView.Columns, o => typeof(CellValue)));
-                GridView.Model = Store;
                 if (_DataSource is DataTable dtable)
                 {
                     LoadDataTableSource(dtable);
+                }
+                else if (_DataSource is DataSet dset)
+                {
+                    if (string.IsNullOrEmpty(DataMember))
+                        LoadDataTableSource(dset.Tables[0]);
+                    else
+                        LoadDataTableSource(dset.Tables[DataMember]);
                 }
                 else if (_DataSource is DataView dview)
                 {
@@ -162,37 +207,34 @@ namespace System.Windows.Forms
                 {
                     LoadListSource();
                 }
-                _columns.Invalidate();
             }
             _Created = true;
         }
         public string DataMember { get; set; }
         private void LoadDataTableSource(DataTable dt)
         {
-            if (Columns.Count == 0)
+            foreach (DataColumn col in dt.Columns)
             {
-                string[] _DataMembers = string.IsNullOrWhiteSpace(DataMember) ? new string[0] : DataMember.Split(",");
-                foreach (DataColumn col in dt.Columns)
+                if (_columns.Exists(m => m.DataPropertyName == col.ColumnName) == false)
                 {
-                    if (_DataMembers.Length == 0 || _DataMembers.Contains(col.ColumnName))
-                    {
-                        if (col.DataType.Name == "Boolean")
-                            Columns.Add(new DataGridViewCheckBoxColumn() { Name = col.ColumnName, HeaderText = col.ColumnName, ValueType = col.DataType });
-                        else
-                            Columns.Add(new DataGridViewColumn() { Name = col.ColumnName, HeaderText = col.ColumnName, ValueType = col.DataType });
-                    }
+                    if (col.DataType.Name == "Boolean")
+                        _columns.Add(new DataGridViewCheckBoxColumn(this) { Name = col.ColumnName, HeaderText = col.ColumnName, DataPropertyName = col.ColumnName, ValueType = col.DataType });
+                    else if (col.DataType.Name == "Image" || col.DataType.Name == "Bitmap")
+                        _columns.Add(new DataGridViewImageColumn(this) { Name = col.ColumnName, HeaderText = col.ColumnName, DataPropertyName = col.ColumnName, ValueType = col.DataType });
+                    else
+                        _columns.Add(new DataGridViewColumn(this) { Name = col.ColumnName, HeaderText = col.ColumnName, DataPropertyName = col.ColumnName, ValueType = col.DataType });
                 }
-                _columns.Invalidate();
             }
-            int ncolumns = Columns.Count;
-            if (ncolumns > 0)
+            _columns.Invalidate();
+
+            if (_columns.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     DataGridViewRow newRow = new DataGridViewRow();
-                    foreach (DataGridViewColumn col in Columns)
+                    foreach (DataGridViewColumn col in _columns)
                     {
-                        string cellvalue = dt.Columns.Contains(col.Name) ? dr[col.Name].ToString() : string.Empty;
+                        object cellvalue = dt.Columns.Contains(col.DataPropertyName ?? string.Empty) ? dr[col.DataPropertyName] : null;
                         if (col is DataGridViewTextBoxColumn)
                             newRow.Cells.Add(new DataGridViewTextBoxCell() { Value = cellvalue });
                         else if (col is DataGridViewImageColumn)
@@ -218,36 +260,33 @@ namespace System.Windows.Forms
             Type[] _entityType = _type.GetGenericArguments();
             if (_entityType.Length == 1)
             {
-                if (Columns.Count == 0)
+                PropertyInfo[] pros = _entityType[0].GetProperties();
+                foreach (PropertyInfo pro in pros)
                 {
-                    string[] _DataMembers = string.IsNullOrWhiteSpace(DataMember) ? new string[0] : DataMember.Split(",");
-                    PropertyInfo[] pros = _entityType[0].GetProperties();
-                    foreach (PropertyInfo pro in pros)
+                    if (_columns.Exists(m => m.DataPropertyName == pro.Name) == false)
                     {
-                        if (_DataMembers.Length == 0 || _DataMembers.Contains(pro.Name))
-                        {
-                            if (pro.PropertyType.Name == "Boolean")
-                                Columns.Add(new DataGridViewCheckBoxColumn() { Name = pro.Name, HeaderText = pro.Name, ValueType = pro.PropertyType });
-                            else
-                                Columns.Add(new DataGridViewColumn() { Name = pro.Name, HeaderText = pro.Name, ValueType = pro.PropertyType });
-                        }
+                        if (pro.PropertyType.Name == "Boolean")
+                            _columns.Add(new DataGridViewCheckBoxColumn(this) { Name = pro.Name, HeaderText = pro.Name, DataPropertyName = pro.Name, ValueType = pro.PropertyType });
+                        else if (pro.PropertyType.Name == "Image" || pro.PropertyType.Name == "Bitmap")
+                            _columns.Add(new DataGridViewImageColumn(this) { Name = pro.Name, HeaderText = pro.Name, DataPropertyName = pro.Name, ValueType = pro.PropertyType });
+                        else
+                            _columns.Add(new DataGridViewColumn(this) { Name = pro.Name, HeaderText = pro.Name, DataPropertyName = pro.Name, ValueType = pro.PropertyType });
                     }
-                    _columns.Invalidate();
                 }
+                _columns.Invalidate();
 
-                int ncolumns = Columns.Count;
-                if (ncolumns > 0)
+                if (_columns.Count > 0)
                 {
                     IEnumerator reader = ((IEnumerable)_DataSource).GetEnumerator();
                     while (reader.MoveNext())
                     {
                         object obj = reader.Current;
-                        Dictionary<string, string> values = new Dictionary<string, string>();
-                        Array.ForEach(obj.GetType().GetProperties(), o => { values.Add(o.Name, Convert.ToString(o.GetValue(obj))); });
+                        Dictionary<string, object> values = new Dictionary<string, object>();
+                        Array.ForEach(obj.GetType().GetProperties(), o => { values.Add(o.Name, o.GetValue(obj)); });
                         DataGridViewRow newRow = new DataGridViewRow();
-                        foreach (DataGridViewColumn col in Columns)
+                        foreach (DataGridViewColumn col in _columns)
                         {
-                            string cellvalue = values.ContainsKey(col.Name) ? values[col.Name] : string.Empty;
+                            values.TryGetValue(col.DataPropertyName ?? string.Empty, out object cellvalue);
                             if (col is DataGridViewTextBoxColumn)
                                 newRow.Cells.Add(new DataGridViewTextBoxCell() { Value = cellvalue });
                             else if (col is DataGridViewImageColumn)
@@ -286,7 +325,16 @@ namespace System.Windows.Forms
                 {
                     case DataGridViewSelectionMode.CellSelect:
                         {
-
+                            int cols = Store.NColumns;
+                            Store.Foreach(new TreeModelForeachFunc((model, path, iter) => {
+                                for (int i = 0; i < cols; i++)
+                                {
+                                    DataGridViewCell cell = (DataGridViewCell)model.GetValue(iter, i);
+                                    if (cell.Selected)
+                                        stcc.Add(cell);
+                                }
+                                return false;
+                            }));
                             break;
                         }
 
@@ -404,10 +452,15 @@ namespace System.Windows.Forms
         {
             _Created = true;
         }
-
-
-
-
+        public void ClearSelection()
+        {
+            GridView.Selection.UnselectAll();
+        }
+        public void OnCellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (CellPainting != null)
+                CellPainting(sender, e);
+        }
         //[Obsolete("此事件未实现，自行开发")]
         //public event EventHandler BackgroundImageChanged;
         [Obsolete("此事件未实现，自行开发")]
@@ -612,7 +665,6 @@ namespace System.Windows.Forms
         public event DataGridViewCellStateChangedEventHandler CellStateChanged;
         [Obsolete("此事件未实现，自行开发")]
         public event DataGridViewCellParsingEventHandler CellParsing;
-        [Obsolete("此事件未实现，自行开发")]
         public event DataGridViewCellPaintingEventHandler CellPainting;
         [Obsolete("此事件未实现，自行开发")]
         public event DataGridViewCellMouseEventHandler CellMouseUp;
@@ -658,6 +710,5 @@ namespace System.Windows.Forms
         public event DataGridViewRowEventHandler UserDeletedRow;
         [Obsolete("此事件未实现，自行开发")]
         public event DataGridViewRowEventHandler UserAddedRow;
-
     }
 }

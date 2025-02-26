@@ -26,6 +26,8 @@ namespace System.Windows.Forms
             self.Changed += Self_Changed;
             self.TextInserted += Self_TextInserted;
             self.KeyPressEvent += Self_KeyPressEvent;
+
+            self.Text = string.Empty;
         }
 
         private void Self_KeyPressEvent(object o, Gtk.KeyPressEventArgs args)
@@ -48,10 +50,10 @@ namespace System.Windows.Forms
                 string keytext = args.NewText.ToUpper();
                 if (char.IsNumber(args.NewText[0]))
                     keytext = "D" + keytext;
-                var keyv = Enum.GetValues<Keys>().Where(k=> {  
-                    return Enum.GetName(k) == keytext;
+                var keyv = Enum.GetValues(typeof(Keys)).Cast<Keys>().Where(k => {
+                    return Enum.GetName(typeof(Keys), k) == keytext;
                 });
-                foreach(var key in keyv) 
+                foreach (var key in keyv) 
                     KeyDown(this, new KeyEventArgs(key));
             }
         }
@@ -61,11 +63,36 @@ namespace System.Windows.Forms
             if (TextChanged != null && self.IsVisible) { TextChanged(this, EventArgs.Empty); }
         }
 
-        public string PlaceholderText { get { return self.PlaceholderText; } set { self.PlaceholderText = value ?? ""; } }
-        public override string Text { get { return self.Text; } set { self.Text = value ?? ""; } }
+        public string PlaceholderText { get { return self.PlaceholderText; } set { self.PlaceholderText = value ?? string.Empty; } }
+        public override string Text { get { return self.Text; } set { self.Text = value ?? string.Empty; } }
         public virtual char PasswordChar { get => self.InvisibleChar; set { self.InvisibleChar = value; self.Visibility = false; } }
         public virtual bool ReadOnly { get { return self.IsEditable == false; } set { self.IsEditable = value == false;  } }
         public override event EventHandler TextChanged;
         public bool Multiline { get; set; }
+        public int SelectionStart { get { self.GetSelectionBounds(out int start, out int end); return start; } }
+
+        [System.ComponentModel.Browsable(false)]
+        public virtual int SelectionLength
+        {
+            get { self.GetSelectionBounds(out int start, out int end); return end - start; }
+            set
+            {
+                self.SelectRegion(self.CursorPosition, self.CursorPosition + value);
+            }
+        }
+        public void InsertTextAtCursor(string text)
+        {
+            if(text == null) return;
+            int posi = self.CursorPosition;
+            self.InsertText(text,ref posi);
+        }
+
+        public int TextLength => self.TextLength;
+
+        public int MaxLength
+        {
+            get => self.MaxLength;
+            set => self.MaxLength = value; 
+        } 
     }
 }

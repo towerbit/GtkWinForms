@@ -237,7 +237,7 @@ namespace System.Windows.Forms
                 irun = ShowCore(ActiveWindow, Gtk.WindowPosition.CenterOnParent, text, caption, buttons, icon);
             }
 
-            Gtk.ResponseType resp = Enum.Parse<Gtk.ResponseType>(irun.ToString());
+            Gtk.ResponseType resp = (Gtk.ResponseType)Enum.Parse(typeof(Gtk.ResponseType), irun.ToString());
             if (resp == Gtk.ResponseType.Yes)
                 return DialogResult.Yes;
             else if (resp == Gtk.ResponseType.No)
@@ -396,6 +396,7 @@ namespace System.Windows.Forms
             Gtk.Dialog dia = o as Gtk.Dialog;
             dia.PangoContext.Dispose();
             dia.Dispose();
+            dia.Destroy();
         }
     }
 }

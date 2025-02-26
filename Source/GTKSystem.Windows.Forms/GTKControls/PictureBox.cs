@@ -5,6 +5,7 @@
  * author:chenhongjin
  */
 
+using Gtk;
 using GTKSystem.Windows.Forms.GTKControls.ControlBase;
 using GTKSystem.Windows.Forms.Utility;
 using System.ComponentModel;
@@ -19,6 +20,7 @@ namespace System.Windows.Forms
     {
         private readonly PictureBoxBase self = new PictureBoxBase();
         public override object GtkControl => self;
+                
         public PictureBox()
         {
             self.Shown += Self_Shown;
