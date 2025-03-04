@@ -79,7 +79,7 @@ namespace GTKWinFormsApp
 
         private void button7_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog ofd = new FolderBrowserDialog();
+            using FolderBrowserDialog ofd = new FolderBrowserDialog();
             ofd.Title = "测试浏览文件夹";
             ofd.Description = "浏览文件夹 decription";
             ofd.Multiselect = true;

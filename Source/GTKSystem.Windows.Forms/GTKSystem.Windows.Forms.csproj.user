@@ -257,6 +257,9 @@
     <Compile Update="GTKControls\SplitterPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="GTKControls\SwitchBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="GTKControls\TabControl.cs">
       <SubType>Component</SubType>
     </Compile>
