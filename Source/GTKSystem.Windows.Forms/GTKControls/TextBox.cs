@@ -87,11 +87,5 @@ namespace System.Windows.Forms
         }
 
         public int TextLength => self.TextLength;
-
-        public int MaxLength
-        {
-            get => self.MaxLength;
-            set => self.MaxLength = value; 
-        } 
     }
 }

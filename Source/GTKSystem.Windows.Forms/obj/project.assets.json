@@ -187,6 +187,12 @@
           "build/GtkSharp.targets": {}
         }
       },
+      "Microsoft.NET.ILLink.Tasks/8.0.13": {
+        "type": "package",
+        "build": {
+          "build/Microsoft.NET.ILLink.Tasks.props": {}
+        }
+      },
       "PangoSharp/3.24.24.95": {
         "type": "package",
         "dependencies": {
@@ -298,6 +304,57 @@
         "lib/netstandard2.0/GtkSharp.dll"
       ]
     },
+    "Microsoft.NET.ILLink.Tasks/8.0.13": {
+      "sha512": "R19ZTaRiQAK+xo9ZwaHbF/1vb1wwR1Wn5+sqp9v8+CDjbdS8R6qftKdw0VSXWKm7VAMi7P+NCU4zxDzhEWcAwQ==",
+      "type": "package",
+      "path": "microsoft.net.illink.tasks/8.0.13",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "Sdk/Sdk.props",
+        "THIRD-PARTY-NOTICES.TXT",
+        "analyzers/dotnet/cs/ILLink.CodeFixProvider.dll",
+        "analyzers/dotnet/cs/ILLink.RoslynAnalyzer.dll",
+        "build/Microsoft.NET.ILLink.Analyzers.props",
+        "build/Microsoft.NET.ILLink.Tasks.props",
+        "build/Microsoft.NET.ILLink.targets",
+        "microsoft.net.illink.tasks.8.0.13.nupkg.sha512",
+        "microsoft.net.illink.tasks.nuspec",
+        "tools/net472/ILLink.Tasks.dll",
+        "tools/net472/ILLink.Tasks.dll.config",
+        "tools/net472/Mono.Cecil.Mdb.dll",
+        "tools/net472/Mono.Cecil.Pdb.dll",
+        "tools/net472/Mono.Cecil.Rocks.dll",
+        "tools/net472/Mono.Cecil.dll",
+        "tools/net472/Sdk/Sdk.props",
+        "tools/net472/System.Buffers.dll",
+        "tools/net472/System.Collections.Immutable.dll",
+        "tools/net472/System.Memory.dll",
+        "tools/net472/System.Numerics.Vectors.dll",
+        "tools/net472/System.Reflection.Metadata.dll",
+        "tools/net472/System.Runtime.CompilerServices.Unsafe.dll",
+        "tools/net472/build/Microsoft.NET.ILLink.Analyzers.props",
+        "tools/net472/build/Microsoft.NET.ILLink.Tasks.props",
+        "tools/net472/build/Microsoft.NET.ILLink.targets",
+        "tools/net8.0/ILLink.Tasks.deps.json",
+        "tools/net8.0/ILLink.Tasks.dll",
+        "tools/net8.0/Mono.Cecil.Mdb.dll",
+        "tools/net8.0/Mono.Cecil.Pdb.dll",
+        "tools/net8.0/Mono.Cecil.Rocks.dll",
+        "tools/net8.0/Mono.Cecil.dll",
+        "tools/net8.0/Sdk/Sdk.props",
+        "tools/net8.0/build/Microsoft.NET.ILLink.Analyzers.props",
+        "tools/net8.0/build/Microsoft.NET.ILLink.Tasks.props",
+        "tools/net8.0/build/Microsoft.NET.ILLink.targets",
+        "tools/net8.0/illink.deps.json",
+        "tools/net8.0/illink.dll",
+        "tools/net8.0/illink.runtimeconfig.json",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "PangoSharp/3.24.24.95": {
       "sha512": "H7JeyEvLsgvsbamGpRgoNtdvzPiGwwsUuoeTobN1C/JRjw1J8Snw0yf2WBr7CKx5GLwbrwpQYOb7N/HD17ME8A==",
       "type": "package",
@@ -348,6 +405,7 @@
     ],
     "net8.0": [
       "GtkSharp >= 3.24.24.95",
+      "Microsoft.NET.ILLink.Tasks >= 8.0.13",
       "System.Resources.Extensions >= 8.0.0"
     ]
   },
@@ -442,6 +500,12 @@
           "GtkSharp": {
             "target": "Package",
             "version": "[3.24.24.95, )"
+          },
+          "Microsoft.NET.ILLink.Tasks": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[8.0.13, )",
+            "autoReferenced": true
           },
           "System.Resources.Extensions": {
             "target": "Package",
