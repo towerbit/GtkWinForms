@@ -90,3 +90,9 @@ $RECYCLE.BIN/
 /Samples/GTKWinFormsApp/bin/Debug/net6.0
 /Samples/GTKWinFormsApp/obj/Debug/net6.0
 /.vs/GTKWinFormsApp/DesignTimeBuild/.dtbcache.v2
+/Samples/GTKWinFormsApp/obj/project.assets.json
+/Samples/GTKWinFormsApp/obj/project.nuget.cache
+/Source/System.Resources.Extensions/obj/Release/net6.0/System.Resources.Extensions.AssemblyInfo.cs
+/Source/System.Resources.Extensions/obj/Release/net6.0/System.Resources.Extensions.AssemblyInfoInputs.cache
+/Source/System.Resources.Extensions/obj/Release/net6.0/System.Resources.Extensions.assets.cache
+/Source/System.Resources.Extensions/obj/Release/net6.0/System.Resources.Extensions.GeneratedMSBuildEditorConfig.editorconfig
