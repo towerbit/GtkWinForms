@@ -232,6 +232,10 @@ namespace GTKWinFormsApp
             //ofd.Multiselect = true;
             DialogResult dialogResult = ofd.ShowDialog();
             Console.WriteLine("dialogResult:" + dialogResult.ToString());
+            foreach (string file in ofd.SelectedPaths)
+            {
+                Console.WriteLine("SelectedPaths:" + file);
+            }
             Console.WriteLine("SelectedPath:" + ofd.SelectedPath);
             //foreach (string file in ofd.SelectedPaths)
             //{
