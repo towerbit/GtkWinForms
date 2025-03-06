@@ -1,8 +1,6 @@
 ﻿
 using Gtk;
 using GTKSystem.Windows.Forms.Utility;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -18,6 +16,7 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
         }
         public event DrawnHandler DrawnBackground;
         public event PaintEventHandler Paint;
+        public event PaintEventHandler BackgroundPaint; // 增加一个背景绘制事件
         public System.Drawing.Color? BackColor { get; set; }
         private System.Drawing.Image _BackgroundImage;
         public System.Drawing.Image BackgroundImage { get { return _BackgroundImage; } set { _BackgroundImage = value; backgroundPixbuf = null; } }
@@ -81,6 +80,8 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
                 DrawnArgs args = new DrawnArgs() { Args = new object[] { cr } };
                 DrawnBackground(this.container, args);
             }
+
+            BackgroundPaint?.Invoke(this.container, new PaintEventArgs(new Graphics(container, cr, area), new Rectangle(area.X, area.Y, area.Width, area.Height)));
         }
         private Gdk.Pixbuf imagePixbuf;
         public void OnDrawnImage(Cairo.Context cr, Gdk.Rectangle area)
@@ -107,6 +108,5 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
             //var e = new PaintEventArgs(new Graphics(container, cr, area), new Rectangle(area.X, area.Y, area.Width, area.Height));
             //OnPaint(e);
         }
-        //public void OnPaint(PaintEventArgs e)=> Paint?.Invoke(this.container, e);
     }
 }
