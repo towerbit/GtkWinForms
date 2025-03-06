@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
-	  <!--<TargetFrameworks>net6.0;net8.0</TargetFrameworks>-->
+	  <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
       <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	  <Authors>chenhongjin</Authors>
 	  <Company>chenhongjin</Company>
@@ -180,9 +179,7 @@ https://github.com/easywebfactory/gtksystem-windows-forms；
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="GTKControls\EventArgs\Control.PrintPaintEventArgs.cs" />
-    <Compile Update="GTKControls\Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="GTKControls\Form.cs" />
     <Compile Update="GTKControls\GroupBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,8 +1,4 @@
 ﻿using Gtk;
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -39,7 +35,6 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
         public event System.Windows.Forms.ScrollEventHandler Scroll;
         public FormBase(Gtk.Window parent = null) : base("title", Gtk.Window.ListToplevels().LastOrDefault(o => o is FormBase && o.IsActive), DialogFlags.UseHeaderBar)
         {
-            this.DestroyWithParent = true;
             this.Override = new GtkControlOverride(this);
             this.Override.AddClass("Form");
             this.WindowPosition = Gtk.WindowPosition.Center;
@@ -82,8 +77,21 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
         private void FormBase_Drawn(object o, DrawnArgs args)
         {
             Gdk.Rectangle rec = new Gdk.Rectangle(0, 0, this.AllocatedWidth, this.AllocatedHeight);
+            // 注意: 调用保护方法 OnDrawnBackground 将会导致整个窗体需要自己重绘, 不要乱改
+            //Override.OnDrawnBackground(args.Cr, rec); 
             Override.OnPaint(args.Cr, rec);
         }
+
+        // 未调用
+        //protected override bool OnDrawn(Cairo.Context cr)
+        //{
+        //    Gdk.Rectangle rec = new Gdk.Rectangle(0, 0, this.AllocatedWidth, this.AllocatedHeight);
+        //    Override.OnDrawnBackground(cr, rec);
+        //    Override.OnPaint(cr, rec);
+        //    base.OnDrawn(cr);
+        //    return true;
+        //}
+
 
         private void FormBase_Response(object o, ResponseArgs args)
         {
@@ -92,10 +100,8 @@ namespace GTKSystem.Windows.Forms.GTKControls.ControlBase
                 if (CloseWindowEvent(this, EventArgs.Empty))
                 {
                     this.OnClose();
-                    if (this.Group.CurrentGrab != null)
-                    {
-                        this.Group.CurrentGrab.Destroy();
-                    }
+                    this.Group.CurrentGrab?.Dispose();
+                    //this.Dispose(); // 上游更改会导致 int irun = self.Run(); 处在关闭窗口时内存冲突，这里注释掉
                     this.Destroy();
                 }
                 else

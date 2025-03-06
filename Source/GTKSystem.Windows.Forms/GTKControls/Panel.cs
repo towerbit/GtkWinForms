@@ -7,7 +7,7 @@
 using Gtk;
 using GTKSystem.Windows.Forms.GTKControls.ControlBase;
 using System.ComponentModel;
-using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace System.Windows.Forms
 {
@@ -43,5 +43,46 @@ namespace System.Windows.Forms
                 contaner.MarginBottom = value.Bottom;
             }
         }
+
+        #region TODO: 动态修改后支持刷新显示
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e); // 这个保护方法，基类尚未调用
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+        }
+
+        /// <summary>
+        /// 重写属性，解决运行时修改图片后无法刷新显示的问题
+        /// 这个办法对动态改变 BackgroundImage 显示无效，
+        /// 更好的方案是重写 OnPaint() 中完成绘图
+        /// </summary>
+        public override Drawing.Image Image
+        {
+            get => base.Image;
+            set
+            {
+                ControlCollection controls = null;
+                switch (this.Parent)
+                {
+                    case Form form: controls = form.Controls; break;
+                    case Panel panel: controls = panel.Controls; break;
+                    case FlowLayoutPanel flpanel: controls = flpanel.Controls; break;
+                    case TableLayoutPanel tlpanel: controls = tlpanel.Controls; break;
+                    case TabPage page: controls = page.Controls; break;
+                    case GroupBox gBox: controls = gBox.Controls; break;
+                    default:
+                        Debug.Print("直接更换图像可能没有效果");
+                        break;
+                }
+                controls?.Remove(this);
+                base.Image = value;
+                controls?.Add(this);
+            } 
+        }
+        #endregion
     }
 }

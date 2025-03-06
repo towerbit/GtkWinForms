@@ -1147,15 +1147,15 @@ namespace System.Drawing
 				}
                 
                 string family = font?.Name;
-                if (this.widget != null)
-                {
-                    Pango.Context pangocontext = this.widget.PangoContext;
-                    family = pangocontext.FontDescription.Family;
-                    var pangoFamily = Array.Find(pangocontext.Families, f => f.Name == font.Name);
-                    if (pangoFamily == null)
-                        family = pangocontext.FontDescription.Family;
-                }
-                this.context.SetFontSize(textSize);
+				if (this.widget != null)
+				{
+					Pango.Context pangocontext = this.widget.PangoContext;
+					family = pangocontext.FontDescription.Family;
+					var pangoFamily = Array.Find(pangocontext.Families, f => f.Name == font.Name);
+					if (pangoFamily != null)
+						family = pangoFamily.Name;
+				}
+				this.context.SetFontSize(textSize);
                 this.context.SelectFontFace(family, (font.Style & FontStyle.Italic) != 0 ? Cairo.FontSlant.Italic : Cairo.FontSlant.Normal, (font.Style & FontStyle.Bold) != 0 ? Cairo.FontWeight.Bold : Cairo.FontWeight.Normal);
                 TextExtents textext = this.context.TextExtents(text);
                 this.SetTranslateWithDifference(layoutRectangle.X, layoutRectangle.Y + textext.Height);

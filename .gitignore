@@ -185,3 +185,6 @@ $RECYCLE.BIN/
 /Source/System.Resources.Extensions/.vs/System.Resources.Extensions/FileContentIndex/read.lock
 /Source/System.Resources.Extensions/.vs/System.Resources.Extensions/v17/.futdcache.v2
 /Source/System.Resources.Extensions/.vs/System.Resources.Extensions/v17/.suo
+/Samples/GTKWinFormsApp/obj/Debug/.NETFramework,Version=v4.8.AssemblyAttributes.cs
+/Samples/GTKWinFormsApp/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/Samples/GTKWinFormsApp/obj/Debug/GTKWinFormsApp_Win.csproj.AssemblyReference.cache

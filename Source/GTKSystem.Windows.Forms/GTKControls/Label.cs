@@ -7,6 +7,7 @@
 using Gtk;
 using GTKSystem.Windows.Forms.GTKControls.ControlBase;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace System.Windows.Forms
 {
@@ -73,5 +74,32 @@ namespace System.Windows.Forms
             }
         }
         private System.Drawing.ContentAlignment textAlign;
+
+        /// <summary>
+        /// 重写属性，解决运行时换图不会刷新显示的问题，参见 Panel 中的相关代码
+        /// </summary>
+        public override Drawing.Image Image
+        {
+            get => base.Image;
+            set
+            {
+                ControlCollection controls = null;
+                switch (this.Parent)
+                {
+                    case Form form: controls = form.Controls; break;
+                    case Panel panel: controls = panel.Controls; break;
+                    case FlowLayoutPanel flpanel: controls = flpanel.Controls; break;
+                    case TableLayoutPanel tlpanel: controls = tlpanel.Controls; break;
+                    case TabPage page: controls = page.Controls; break;
+                    case GroupBox gBox: controls = gBox.Controls; break;
+                    default:
+                        Debug.Print("运行时更换图像可能没有效果");
+                        break;
+                }
+                controls?.Remove(this);
+                base.Image = value;
+                controls?.Add(this);
+            }
+        }
     }
 }

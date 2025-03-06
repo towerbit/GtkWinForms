@@ -62,6 +62,9 @@
     <Compile Update="GTKControls\Drawing\Printing\PrintDocument.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="GTKControls\Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="GTKControls\HScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -121,9 +124,6 @@
     </Compile>
     <Compile Update="GTKControls\FlowLayoutPanel.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GTKControls\Form.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Update="GTKControls\GroupBox.cs">
       <SubType>Component</SubType>

@@ -65,8 +65,24 @@ namespace System.Windows.Forms
                 widget.SizeAllocated += Widget_SizeAllocated;
                 // 触发 OnPaint() 保护方法，将先于 Paint Event
                 ISelf.Override.Paint += (s, e) => OnPaint(e);
+                
+                //ISelf.Override.DrawnBackground += Override_DrawnBackground;
+                // 触发 OnBackgroundPaint 保护方法
+                ISelf.Override.BackgroundPaint += (s, e) => OnPaintBackground(e);
             }
         }
+
+        //private void Override_DrawnBackground(object o, DrawnArgs e)
+        //{
+        //    if (surface != null)
+        //    {
+        //        Debug.Print("       Call Override_DrawnBackground");
+        //        e.Cr.Save();
+        //        e.Cr.SetSourceSurface(surface, 0, 0);
+        //        e.Cr.Paint();
+        //        e.Cr.Restore();
+        //    }
+        //}
 
         private int size_width = 0;
         private int size_height = 0;
@@ -140,16 +156,16 @@ namespace System.Windows.Forms
                 //    DoubleClick(this, EventArgs.Empty);
                 OnDoubleClick(EventArgs.Empty);
             }
-            else
-            {
-                //if (Click != null)
-                //    Click(this, EventArgs.Empty);
-                //if (MouseClick != null)
-                //    MouseClick(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
-                OnMouseClick(new MouseEventArgs(result, 1, pX, pY, 0));
-                OnClick(EventArgs.Empty);
-            }
-            
+            //else
+            //{
+            //    //if (Click != null)
+            //    //    Click(this, EventArgs.Empty);
+            //    //if (MouseClick != null)
+            //    //    MouseClick(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+            //    OnMouseClick(new MouseEventArgs(result, 1, pX, pY, 0));
+            //    OnClick(EventArgs.Empty);
+            //}
+
         }
         private void Widget_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
         {
@@ -174,6 +190,24 @@ namespace System.Windows.Forms
             }
             //MouseUp(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
             OnMouseUp(new MouseEventArgs(result, 1, pX, pY, 0));
+            //}
+            //if (args.Event.Type == Gdk.EventType.TwoButtonPress || args.Event.Type == Gdk.EventType.DoubleButtonPress)
+            //{
+            //    //if (MouseDoubleClick != null)
+            //    //    MouseDoubleClick(this, new MouseEventArgs(result, 2, (int)args.Event.X, (int)args.Event.Y, 0));
+            //    OnMouseDoubleClick(new MouseEventArgs(result, 2, pX, pY, 0));
+            //    //if (DoubleClick != null)
+            //    //    DoubleClick(this, EventArgs.Empty);
+            //    OnDoubleClick(EventArgs.Empty);
+            //}
+            //else
+            //{
+                //if (Click != null)
+                //    Click(this, EventArgs.Empty);
+                //if (MouseClick != null)
+                //    MouseClick(this, new MouseEventArgs(result, 1, (int)args.Event.X, (int)args.Event.Y, 0));
+                OnMouseClick(new MouseEventArgs(result, 1, pX, pY, 0));
+                OnClick(EventArgs.Empty);
             //}
 
             if (ContextMenuStrip != null)
@@ -1615,8 +1649,9 @@ namespace System.Windows.Forms
 
         private static readonly object EventPaint = new();
         protected virtual void OnPaint(PaintEventArgs e) =>((PaintEventHandler)base.Events[EventPaint])?.Invoke(this, e);
-        protected virtual void OnPaintBackground(PaintEventArgs e) {}
-
+        //protected virtual void OnPaintBackground(PaintEventArgs e) {}
+        private static readonly object EventBackgroundPaint = new();
+        protected virtual void OnPaintBackground(PaintEventArgs e) => ((PaintEventHandler)base.Events[EventBackgroundPaint])?.Invoke(this, e);
         protected virtual void OnAutoSizeChanged(EventArgs e) => AutoSizeChanged?.Invoke(this, e);
         protected virtual void OnBackColorChanged(EventArgs e) => BackColorChanged?.Invoke(this, e);
         protected virtual void OnBackgroundImageChanged(EventArgs e) => BackgroundImageChanged?.Invoke(this, e);

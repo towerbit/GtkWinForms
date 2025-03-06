@@ -4,6 +4,7 @@
  * 技术支持438865652@qq.com，https://www.gtkapp.com, https://gitee.com/easywebfactory, https://github.com/easywebfactory
  */
 
+using GLib;
 using Gtk;
 using GTKSystem.Windows.Forms.GTKControls.ControlBase;
 using System.ComponentModel;
@@ -56,6 +57,7 @@ namespace System.Windows.Forms
             self.FocusOutEvent += Self_FocusOutEvent;
             self.WindowStateEvent += Self_WindowStateEvent;
             self.ButtonReleaseEvent += Self_ButtonReleaseEvent;
+            self.ButtonPressEvent += Self_ButtonPressEvent;
         }
 
         private void Self_ResizeChecked(object sender, EventArgs e)
@@ -63,7 +65,6 @@ namespace System.Windows.Forms
             OnSizeChanged(EventArgs.Empty);
             OnResize(EventArgs.Empty);
         }
-
 
         /// <summary>
         /// 确保仅调用一次 OnShown 
@@ -106,7 +107,7 @@ namespace System.Windows.Forms
             }
         }
 
-        private void Self_ButtonReleaseEvent(object sender, ButtonReleaseEventArgs e)
+        private void Self_ButtonReleaseEvent(object sender, ButtonReleaseEventArgs args)
         {
             // 判断是否发生窗口位置改变
             if (this.Location != _location)
@@ -115,6 +116,45 @@ namespace System.Windows.Forms
                 OnLocationChanged(EventArgs.Empty);
                 OnMove(EventArgs.Empty);
             }
+
+            // 解决基类的 OnMouseUp 方法会被调用两次的问题
+            iMouseUp = 1 - iMouseUp;
+            if (iMouseUp == 0)
+                OnMouseUp(new MouseEventArgs(ConvertFromEventButton(args.Event.Button), 
+                          1, (int)args.Event.X, (int)args.Event.Y, 0));
+            else
+                Debug.Print("Skip Form.OnMouseUp");
+
+            // 解决基类的 OnMouseClick 方法会被调用两次的问题
+            iMouseClick = 1 - iMouseClick;
+            if (iMouseClick == 0)
+                OnMouseClick(new MouseEventArgs(ConvertFromEventButton(args.Event.Button), 
+                             1, (int)args.Event.X, (int)args.Event.Y, 0));
+            else
+                Debug.Print("Skip Form.OnMouseClick");
+        }
+
+        private void Self_ButtonPressEvent(object o, ButtonPressEventArgs args)
+        {
+            // 解决基类的 OnMouseDown 方法会被调用两次的问题
+            iMouseDown = 1 - iMouseDown;
+            if (iMouseDown == 0)
+                OnMouseDown(new MouseEventArgs(ConvertFromEventButton(args.Event.Button), 
+                            1, (int)args.Event.X, (int)args.Event.Y, 0));
+            else
+                Debug.Print("Skip Form.OnMouseDown");
+        }
+
+        private MouseButtons ConvertFromEventButton(uint button)
+        {
+            var ret = MouseButtons.None;
+            switch (button)
+            {
+                case 1: ret = MouseButtons.Left; break;
+                case 2: ret = MouseButtons.Middle; break;
+                case 3: ret = MouseButtons.Right; break;
+            }
+            return ret;
         }
 
         private bool Self_CloseWindowEvent(object sender, EventArgs e)
@@ -140,6 +180,7 @@ namespace System.Windows.Forms
             //return closing.Cancel == false;
             return false;
         }
+
         // 之前上游的版本
         //private void ShownControlBoxes()
         //{
@@ -273,31 +314,33 @@ namespace System.Windows.Forms
             {
                 this.Parent = parent;
                 self.SetPosition(WindowPosition.CenterOnParent);
+                self.DestroyWithParent = true; 
                 self.Activate();
             }
 
             if (self.IsVisible == false)
             {
-                if (AutoScroll == true)
-                {
-                    self.ScrollView.HscrollbarPolicy = PolicyType.Automatic;
-                    self.ScrollView.VscrollbarPolicy = PolicyType.Automatic;
-                }
-                else
-                {
-                    self.ScrollView.HscrollbarPolicy = PolicyType.Never;
-                    self.ScrollView.VscrollbarPolicy = PolicyType.Never;
-                }
+                // 这段在上游代码中没有，是我加的？
+                //if (AutoScroll == true)
+                //{
+                //    self.ScrollView.HscrollbarPolicy = PolicyType.Automatic;
+                //    self.ScrollView.VscrollbarPolicy = PolicyType.Automatic;
+                //}
+                //else
+                //{
+                //    self.ScrollView.HscrollbarPolicy = PolicyType.Never;
+                //    self.ScrollView.VscrollbarPolicy = PolicyType.Never;
+                //}
 
                 //this.FormBorderStyle = this.FormBorderStyle;
                 if (this.MaximizeBox == false && this.MinimizeBox == false)
                 {
                     self.TypeHint = Gdk.WindowTypeHint.Dialog;
                 }
-                else if (this.MaximizeBox == false && this.MinimizeBox == true)
-                {
-                    self.Resizable = false;
-                }
+                //else if (this.MaximizeBox == false && this.MinimizeBox == true)
+                //{
+                //    self.Resizable = false; // 上游移除
+                //}
                 self.Resize(self.DefaultWidth, self.DefaultHeight);
 
                 if (this.WindowState == FormWindowState.Maximized)
@@ -376,7 +419,10 @@ namespace System.Windows.Forms
         //public event FormClosingEventHandler FormClosing;
         //public event FormClosedEventHandler FormClosed;
         //public override event EventHandler Load;
-        public override string Text { get { return self.Title; } set { self.Title = value; } }
+        public override string Text { get => self.Title;  set => self.Title = value; } 
+        /// <summary>
+        /// 注意，至少要等到 OnShown 或 OnActived 中，才能获取到有效的 ClientSize  
+        /// </summary>
         public override Size ClientSize
         {
             get
@@ -448,10 +494,11 @@ namespace System.Windows.Forms
         public void Close() {
             if (self != null)
             {
-                //self.CloseWindow();
+                self.CloseWindow(); // FormBase.CloseWindow() 调用的也是 Respond 发送关闭消息
                 // self.CloseWindow() 不会触发 CloseWindowEvent
                 // 改用 Respond 发送关闭消息
-                self.Respond(ResponseType.DeleteEvent);
+                //self.Respond(ResponseType.DeleteEvent);
+
                 //// 需要自己处理关闭相应的事件
                 //var e1 = new FormClosingEventArgs(CloseReason.UserClosing, false);
                 //OnFormClosing(e1);
@@ -595,8 +642,34 @@ namespace System.Windows.Forms
             set => this.Location = new Point(this.Location.X, value);
         }
 
-        
 
+
+        #endregion
+
+        #region 覆盖基类的保护方法，解决 Mouse 事件会触发两次的问题
+        private int iMouseClick = 0;
+        public new MouseEventHandler MouseClick;
+        /// <summary>
+        /// OnMouseClick 在 Self_ButtonReleaseEvent 中被调用
+        /// </summary>
+        /// <param name="e"></param>
+        protected new virtual void OnMouseClick(MouseEventArgs e) => MouseClick?.Invoke(this, e);
+
+        private int iMouseUp = 0;
+        public new MouseEventHandler MouseUp;
+        /// <summary>
+        /// OnMouseUp 在 Self_ButtonReleaseEvent 中被调用
+        /// </summary>
+        /// <param name="e"></param>
+        protected new virtual void OnMouseUp(MouseEventArgs e) => MouseUp?.Invoke(this, e);
+
+        private int iMouseDown = 0;
+        public new MouseEventHandler MouseDown;
+        /// <summary>
+        /// OnMouseDown 在 Self_ButtonPressEvent 中被调用
+        /// </summary>
+        /// <param name="e"></param>
+        protected new virtual void OnMouseDown(MouseEventArgs e) => MouseDown?.Invoke(this, e);
         #endregion
     }
 
