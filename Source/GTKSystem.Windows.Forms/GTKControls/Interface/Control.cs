@@ -1370,7 +1370,10 @@ namespace System.Windows.Forms
 
         public virtual void SetBounds(int x, int y, int width, int height)
         {
-            SetBounds(x, y, width, height, BoundsSpecified.All);
+            // 以下方法调用无效果，改为设置 Location 和 Size
+            //SetBounds(x, y, width, height, BoundsSpecified.All);
+            this.Location = new Point(x, y);
+            this.Size = new Size(width, height);
         }
 
         public virtual void SetBounds(int x, int y, int width, int height, BoundsSpecified specified)

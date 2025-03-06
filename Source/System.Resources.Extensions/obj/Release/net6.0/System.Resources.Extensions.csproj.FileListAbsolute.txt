@@ -1,0 +1,12 @@
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\bin\Release\net6.0\System.Resources.Extensions.deps.json
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\bin\Release\net6.0\System.Resources.Extensions.dll
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\bin\Release\net6.0\System.Resources.Extensions.pdb
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.AssemblyInfoInputs.cache
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.AssemblyInfo.cs
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.csproj.CoreCompileInputs.cache
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.sourcelink.json
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.dll
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\refint\System.Resources.Extensions.dll
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\System.Resources.Extensions.pdb
+C:\Users\liutao\Source\Repos\GtkWinForms\Source\System.Resources.Extensions\obj\Release\net6.0\ref\System.Resources.Extensions.dll

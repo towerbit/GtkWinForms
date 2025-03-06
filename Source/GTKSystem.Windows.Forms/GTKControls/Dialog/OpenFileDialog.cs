@@ -4,6 +4,8 @@
  * 技术支持438865652@qq.com，https://www.gtkapp.com, https://gitee.com/easywebfactory, https://github.com/easywebfactory
  * author:chenhongjin
  */
+using System.Security.Cryptography;
+
 namespace System.Windows.Forms
 {
     public sealed class OpenFileDialog : FileDialog
@@ -49,7 +51,29 @@ namespace System.Windows.Forms
         public override DialogResult ShowDialog(IWin32Window owner)
         {
             ActionType = Gtk.FileChooserAction.Open;
-            return base.ShowDialog(owner);
+            // v1.3.24.63 存在选择目录也可以点击确认关闭，
+            // 但 FileName 实际返回的是目录路径而非文件路径的问题
+            //return base.ShowDialog(owner);
+
+            // 暂时修改为如果选中目录点击确定时，
+            // 就定位到该目录重新打开对话框
+            DialogResult ret = DialogResult.Cancel;
+            while (true)
+            { 
+                if (base.ShowDialog(owner) == DialogResult.OK)
+                {
+                    if (File.Exists(this.FileName))
+                    {
+                        ret = DialogResult.OK;
+                        break;
+                    }
+                    else
+                        this.InitialDirectory = this.FileName; // 视作目录重新打开
+                }
+                else
+                    break;
+            }
+            return ret;
         }
     }
 }

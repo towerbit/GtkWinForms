@@ -5,6 +5,7 @@
  * author:chenhongjin
  */
 
+using Cairo;
 using System.ComponentModel;
 
 namespace System.Windows.Forms
@@ -31,6 +32,9 @@ namespace System.Windows.Forms
         public int FilterIndex { get; set; }
 
         private string _filter;
+        /// <summary>
+        /// 对话框中可用的文件筛选选项
+        /// </summary>
         public string Filter
         {
             get
@@ -39,26 +43,49 @@ namespace System.Windows.Forms
             }
             set
             {
-                if (value == _filter)
-                {
-                    return;
-                }
-                string[] filters = value?.Split(';');
-                foreach (string filter in filters)
-                {
-                    string[] pattern = filter.Split('|');
-                    if (pattern == null || pattern.Length % 2 != 0 || pattern[1].Split('.').Length == 0)
-                    {
-                        throw new ArgumentException("FileDialog Invalid Filter");
-                    }
-                }
-                string[] array = value?.Split('|');
-                if (array == null || array[1].Split('.').Length == 0)
-                {
+                _fileFilters = parseFilter(value);
+                if (null == _fileFilters)
                     throw new ArgumentException("FileDialog Invalid Filter");
-                }
                 _filter = value;
             }
+        }
+
+        /// <summary>
+        /// 解析后的对话框文件筛选选项集合
+        /// </summary>
+        private IEnumerable<Gtk.FileFilter> _fileFilters;
+
+        /// <summary>
+        /// 解析对话框中可用的文件筛选选项， 筛选器的说明|筛选器模式
+        /// </summary>
+        /// <param name="sFilter">筛选器的写法与 WinForm 保持一致: 说明1|扩展名1;扩展名2|说明2|扩展名3</param>
+        /// <returns></returns>
+        private IEnumerable<Gtk.FileFilter> parseFilter(string sFilter)
+        {
+            var ret = new List<Gtk.FileFilter>();
+            if (!string.IsNullOrEmpty(sFilter))
+            {
+                var filters = sFilter.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if (null != filters && filters.Any() && filters.Length % 2 == 0)
+                {
+                    for (int i = 0; i < filters.Length; i += 2)
+                    {
+                        var extands = filters[i + 1].Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                        var gff = new Gtk.FileFilter();
+                        foreach (string ext in extands)
+                        { 
+                            var extand = ext.Trim(new char[] { '*', ' ' });
+                            if (MimeMapping.ContainsKey(extand))
+                                gff.AddMimeType(MimeMapping[extand]);
+                            gff.AddPattern(ext);
+                        }
+                        gff.Name = $"{filters[i]}({filters[i + 1]})";
+                        ret.Add(gff);
+                    }
+                    return ret;
+                }
+            }
+            return null;
         }
 
         public bool AutoUpgradeEnabled { get; set; }
@@ -127,23 +154,11 @@ namespace System.Windows.Forms
                 filter.Name = extand;
                 fileDialog.Filter = filter;
             }
-            if (_filter != null)
-            {
-                string[] filters = _filter.Split(';');
-                foreach (string filter in filters)
-                {
-                    string[] pattern = filter.Split('|');
-                    Gtk.FileFilter ffilter = new Gtk.FileFilter();
-                    string extand= pattern[1].Trim(new char[] { '*',' ' });
-                    if (MimeMapping.ContainsKey(extand))
-                    {
-                        ffilter.AddMimeType(MimeMapping[extand]);
-                    }
-                    ffilter.AddPattern(pattern[1]);
-                    ffilter.Name = $"{pattern[0]}（{pattern[1]}）";
-                    fileDialog.AddFilter(ffilter);
-                }
-            }
+            // 改用 Filter.Set 中生成的 _fileFilters 添加筛选器
+            if (null != _fileFilters && _fileFilters.Any())
+                foreach (Gtk.FileFilter gff in _fileFilters)
+                    fileDialog.AddFilter(gff);
+
             int response = fileDialog.Run();
             this.FileName = fileDialog.Filename;
             this.FileNames = fileDialog.Filenames.Clone() as string[];

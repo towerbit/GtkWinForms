@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace GtkForm
 {
@@ -7,6 +8,12 @@ namespace GtkForm
         [STAThread]
         static void Main(string[] args)
         {
+            int major = (int)Gtk.Global.MajorVersion;
+            int minor = (int)Gtk.Global.MinorVersion;
+            int micro = (int)Gtk.Global.MicroVersion;
+            // 输出 GTK 版本
+            Console.WriteLine($"GTK Runtime Version: {major}.{minor}.{micro}");
+
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
