@@ -1,36 +1,15 @@
 # GTKSystem.Windows.Forms
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+### 介绍
+**Visual Studio原生开发，无需学习，一次编译，跨平台运行**.
+C#桌面应用程序跨平台（windows、linux、macos）开发框架，基于GTK组件开发，使用该框架开发项目，Visual studio可以使用C#的原生winform表单窗体设计器，相同的属性、方法、事件，C#原生开发即可，无需学习。一次编译，跨平台运行。 便于开发跨平台winform软件，便于将C# winform软件升级为跨平台软件。
 
-#### Software Architecture
-Software architecture description
+项目官网：[https://www.gtkapp.com](https://www.gtkapp.com)   
 
-#### Installation
+ 由于github访问困难，想获取最新版本请从Nuget和Gitee平台下载：
+ 
+从NuGet下载：https://www.nuget.org/packages/GTKSystem.Windows.Forms
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+gitee：https://gitee.com/easywebfactory/gtksystem-windows-forms
 
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+gitee: https://gitee.com/easywebfactory/gtksystem-windows-forms/releases
