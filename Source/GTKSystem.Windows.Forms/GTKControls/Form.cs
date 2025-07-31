@@ -66,19 +66,10 @@ namespace System.Windows.Forms
             OnResize(EventArgs.Empty);
         }
 
-        /// <summary>
-        /// 确保仅调用一次 OnShown 
-        /// </summary>
-        private bool _bShown = false;
         private void Self_FocusInEvent(object sender, FocusInEventArgs e)
         {
-            if (!_bShown)
-            {
-                _bShown = true;
-                _location = this.Location;
-                ShownControlBoxes();
-                OnShown(e);
-            }
+            _location = this.Location;
+            ShownControlBoxes();
             OnActivated(e);
         }
 
@@ -220,6 +211,10 @@ namespace System.Windows.Forms
             if (_isControlShown == false)
             {
                 _isControlShown = true;
+
+                // 以下事件，只触发一次
+                OnLoad(EventArgs.Empty);
+
                 if (self.Titlebar is Gtk.HeaderBar titlebar)
                 {
                     titlebar.DecorationLayout = "menu:close";
@@ -246,9 +241,10 @@ namespace System.Windows.Forms
                         }
                     }
                 }
-                //OnLoadHandler();// 不在这里触发
+
+                // 以下事件，只触发一次
+                OnShown(EventArgs.Empty);
             }
-            //OnShownHandler();// 不在这里触发
         }
 
         //private void Close_Clicked(object sender, EventArgs e)
@@ -373,16 +369,17 @@ namespace System.Windows.Forms
                             flag.Visible = true;
                             titlebar.PackStart(flag);
                         }
-                        else
-                        {
-                            self.Icon = new Gdk.Pixbuf(this.GetType().Assembly, "GTKSystem.Windows.Forms.Resources.System.view-more.png");
-                        }
+                        //else
+                        //{
+                        //    self.Icon = new Gdk.Pixbuf(this.GetType().Assembly, "GTKSystem.Windows.Forms.Resources.System.view-more.png");
+                        //}
 
                     }
                     catch
                     {
+                        self.Icon = new Gdk.Pixbuf(this.GetType().Assembly, "GTKApp.Windows.Forms.Resources.System.image-missing16.png");
                     }
-                    OnLoad(EventArgs.Empty);
+                    //OnLoad(EventArgs.Empty);
                 }
                 self.ShowAll();
             }
@@ -392,6 +389,7 @@ namespace System.Windows.Forms
         {
             return ShowDialog(null);
         }
+
         public DialogResult ShowDialog(IWin32Window owner)
         {
             if (owner == this)

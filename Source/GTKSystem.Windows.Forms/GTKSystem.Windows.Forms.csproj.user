@@ -164,6 +164,9 @@
     <Compile Update="GTKControls\MenuStripBase\ToolStripStatusLabel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="GTKControls\NotifyIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="GTKControls\Printing\PageSetupDialog.cs">
       <SubType>Component</SubType>
     </Compile>

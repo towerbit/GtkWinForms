@@ -33,9 +33,9 @@
             // 
             // btnOpenDialog
             // 
-            this.btnOpenDialog.Location = new System.Drawing.Point(255, 177);
+            this.btnOpenDialog.Location = new System.Drawing.Point(232, 176);
             this.btnOpenDialog.Name = "btnOpenDialog";
-            this.btnOpenDialog.Size = new System.Drawing.Size(102, 34);
+            this.btnOpenDialog.Size = new System.Drawing.Size(177, 49);
             this.btnOpenDialog.TabIndex = 0;
             this.btnOpenDialog.Text = "Open Dialog";
             this.btnOpenDialog.UseVisualStyleBackColor = true;

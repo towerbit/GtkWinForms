@@ -65,7 +65,7 @@ namespace System.Windows.Forms
             get => base.Image;
             set
             {
-                ControlCollection controls = null;
+                ControlCollection? controls = null;
                 switch (this.Parent)
                 {
                     case Form form: controls = form.Controls; break;

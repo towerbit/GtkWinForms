@@ -53,7 +53,8 @@ namespace System.Windows.Forms
                 self.Entry.NoShowAll = true;
                 self.Entry.WidthRequest = 1;
                 ws.WidthRequest = self.WidthRequest;
-                ws.Label = self.Entry.Text;
+                // DropDownList 模式下会多一个去不掉的尾巴
+                //ws.Label = self.Entry.Text;
                 ws.Image = Gtk.Image.NewFromIconName("pan-down", Gtk.IconSize.Button);
                 ws.ImagePosition = Gtk.PositionType.Right;
                 ws.AlwaysShowImage = true;

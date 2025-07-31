@@ -31,11 +31,8 @@ namespace GtkForm
             
             // 以下代码不会触发, 鼠标事件穿透到了 Form 上
             pictureBox1.MouseClick += (s, e) => Debug.Print($"pictureBox1.MouseClick: {e.Button}");
-            
             btnOpen.Click += btnOpenClickEvnetHandler;
-            btnShow.Click += btnShowEventHandler;
-            btnShowDialog.Click += btnShowDialogEventHandler;
-
+            
             this.MouseClick +=(s, e) => Debug.Print($">>>>>  this.MouseClick: {e.Button}");
             this.Paint += (s, e) => { };
 
@@ -43,10 +40,22 @@ namespace GtkForm
                  Debug.Print($">>>>>  btnOpen.MouseClick: {e.Button}");
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Debug.Print(">>>>> OnLoad: ClientSize={0}", this.ClientSize.ToString());
+        }
+
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
             Debug.Print(">>>>> OnShown: ClientSize={0}", this.ClientSize.ToString());
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            Debug.Print(">>>>> OnActivated: ClientSize={0}", this.ClientSize.ToString());
         }
 
         /// <summary>
@@ -56,7 +65,7 @@ namespace GtkForm
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-            Debug.Print(">>>>> Form1.OnPaintBackground");
+            Debug.Print(">>>>> OnPaintBackground");
         }
 
         private class panelEx : Panel
@@ -119,51 +128,8 @@ namespace GtkForm
             Debug.Print($">>>>> OnMouseDoubleClick: {e.Button}");
         }
 
-        private void btnShowDialogEventHandler(object sender, EventArgs e)
-        {
-            using (var f = new Form2())
-            {
-                // 通过 ShowDialog 打开 Form2，
-                f.Text = "Form2 会随子窗体关闭后关闭";
-                f.btnOpenDialog.Text = "打开子窗体对话框";
-                f.ShowDialog();
-            }
-        }
-
-        private void btnShowEventHandler(object sender, EventArgs e)
-        {
-            var f = new Form2();
-            f.Closed += (s1, e1) => this.Enabled = true;
-            f.Text = "Form2 不会随子窗体关闭";
-            f.Show();
-            this.Enabled = false;
-        }
-
         private void btnOpenClickEvnetHandler(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Filter = "Python files|*.py|Source files|*.cs;*.py|Html files|*.html;*.htm;*.json|Image files|*.BMP;*.JPG;*.GIF|All files|*.*";
-                ofd.CheckFileExists = true;
-                ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (ofd.ShowDialog() == DialogResult.OK)
-                    MessageBox.Show(this, $"你选中的文件是 '{ofd.FileName}'", this.Text,
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            using (FontDialog fd = new FontDialog())
-            {
-                if (fd.ShowDialog() == DialogResult.OK)
-                {
-                    MessageBox.Show(this, $"你选中的字体是 '{fd.Font.Name}'", this.Text,
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.Font = fd.Font;
-                    //_selectedFont = fd.Font;
-                    btnOpen.Font = new Font(new FontFamily(fd.Font.Name), 12F);
-                    Refresh();
-                }
-            }
-
             var bmp = Image.FromFile("d:\\c_users_liutao\\Pictures\\earth.png");
             //pictureBox1.BackgroundImage = pictureBox1.Image;
             var bg = new Bitmap(panel1.Width, panel1.Height);
@@ -182,7 +148,9 @@ namespace GtkForm
             // Panel 运行时换图刷新
             //this.Controls.Remove(panel1);
             //panel1.BackgroundImage = bg;
+#if GTKFORM
             panel1.Image = bg;
+#endif
             //panel1.Refresh();
             //this.Controls.Add(panel1);
         }

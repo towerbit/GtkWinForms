@@ -21,7 +21,7 @@ namespace GtkForm
 #endif
             Application.SetCompatibleTextRenderingDefault(false);
             Application.EnableVisualStyles();
-            Application.Run(new Form1());
+            Application.Run(new frmControlDemo());
         }
     }
 }

@@ -18,8 +18,11 @@
 
   <ItemGroup>
     <Compile Remove="Dependency\**" />
+    <Compile Remove="winform-bin\**" />
     <EmbeddedResource Remove="Dependency\**" />
+    <EmbeddedResource Remove="winform-bin\**" />
     <None Remove="Dependency\**" />
+    <None Remove="winform-bin\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,7 +61,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="del /q &quot;$(OutDir)theme\*.*&quot;&#xD;&#xA;del /q &quot;$(OutDir)Resources\*.*&quot;" />
+    <!--<Exec Command="del /q &quot;$(OutDir)theme\*.*&quot;&#xD;&#xA;del /q &quot;$(OutDir)Resources\*.*&quot;" />-->
   </Target>
 
 </Project>
