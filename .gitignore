@@ -188,3 +188,4 @@ $RECYCLE.BIN/
 /Samples/GTKWinFormsApp/obj/Debug/.NETFramework,Version=v4.8.AssemblyAttributes.cs
 /Samples/GTKWinFormsApp/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 /Samples/GTKWinFormsApp/obj/Debug/GTKWinFormsApp_Win.csproj.AssemblyReference.cache
+/Source/System.Resources.Extensions/obj/Debug/net6.0/refint/System.Resources.Extensions.dll

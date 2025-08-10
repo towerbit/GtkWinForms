@@ -553,6 +553,19 @@ namespace System.Windows.Forms
             _Created = true;
         }
         public bool Activate() => self?.Activate() ?? false;
+        private bool _topMost;
+        public bool TopMost
+        {
+            get => _topMost;
+            set 
+            {
+                if (_topMost != value)
+                {
+                    _topMost = value;
+                    self.KeepAbove = value;
+                }
+            }
+        } 
         public MenuStrip MainMenuStrip { get; set; }
 
         public override IntPtr Handle => self.Handle;
@@ -609,7 +622,7 @@ namespace System.Windows.Forms
             get
             {
                 Point ret = Point.Empty;
-                if (!_bShown)
+                if (!_isControlShown)
                     return _location;
                 if (self.IsMapped)
                 {
@@ -622,7 +635,7 @@ namespace System.Windows.Forms
             }
             set
             {
-                if (!_bShown)
+                if (!_isControlShown)
                     _location = value;
                 else if (self.IsMapped)
                     self.Move(value.X, value.Y);

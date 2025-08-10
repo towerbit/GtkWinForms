@@ -302,7 +302,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(16, 218);
+            this.numericUpDown1.Location = new System.Drawing.Point(16, 212);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(86, 21);
             this.numericUpDown1.TabIndex = 9;
@@ -310,7 +310,7 @@
             // progressBar1
             // 
             this.progressBar1.ForeColor = System.Drawing.Color.LimeGreen;
-            this.progressBar1.Location = new System.Drawing.Point(16, 245);
+            this.progressBar1.Location = new System.Drawing.Point(16, 242);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(475, 22);
             this.progressBar1.TabIndex = 11;
@@ -455,10 +455,10 @@
             this.groupBox1.Controls.Add(this.btnError);
             this.groupBox1.Location = new System.Drawing.Point(16, 51);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(145, 143);
+            this.groupBox1.Size = new System.Drawing.Size(145, 132);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "MessageBox";
+            this.groupBox1.Text = " MessageBox ";
             // 
             // btnForm1
             // 
