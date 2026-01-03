@@ -1,3 +1,6 @@
+# 更新说明
+由于上游版本已迁移至 gitee，所以本项目的 dev 分支也同步迁移到[https://gitee.com/tower6/GtkWinForms](https://gitee.com/tower6/GtkWinForms)，此仓库将不在更新。
+
 # GTKSystem.Windows.Forms
 
 ### 介绍
